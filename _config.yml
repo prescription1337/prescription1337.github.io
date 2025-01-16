@@ -224,3 +224,11 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+# ------------ 自動階層化のプラグイン設定------------------
+plugins:
+  - jekyll-category-pages
+
+category_pages:
+  enabled: true
+  permalink: /:category/
