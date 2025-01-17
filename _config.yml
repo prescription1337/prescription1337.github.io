@@ -229,6 +229,6 @@ jekyll-archives:
 plugins:
   - jekyll-category-pages
 
-category_pages:
-  enabled: true
-  permalink: /:category/
+# 推奨設定: ファイル URL から categories を除外
+permalink: /:year/:month/:day/:title:output_ext
+
