@@ -15,43 +15,97 @@ tags: [Android, Kali, Smartphone]
 - OPPO Reno5（CPH2199）はブートローダー解除はサポートされていない
 
 結果：
-- ほぼ不可能。
+- 失敗
 
 所感：
-- 色々情報を漁ったがそもそもCPH2199が日本向けの為、情報が少なかった。
+- 時間を使ったが出来なかった。
+- デバイスによって簡単にルート化出来るもの、不可能なものなど様々存在することが判明。
+- ルート化には幾つかの道があることが分かった。
+
+## まとめ
+
+- ルート化とは
+  - Androidデバイスのシステム領域へのフルアクセス権（root権限）を取得すること。
+  - Androidデバイスはセキュリティ上の理由から、ユーザーがシステムファイルや設定を変更できないよう制限されている。
+- なぜルート化を試みたのか
+  - Kali NetHunterをデバイスに導入したかったから。
+  - 非ルート化でもKali NetHunter Liteを導入できるが、機能制限がかかる。
+    - [Kali NetHunter \| Kali Linux Documentation](https://www.kali.org/docs/nethunter/#20-nethunter-supported-devices-and-roms)
+- ルート化への道
+  1. Fastbootを使用する方法（最も一般的で安全）
+    - 「開発者向けオプション」→「OEMロック解除」を有効化し、USBでPCと接続。
+    - ADB経由でFastbootモードへ移行：`adb reboot bootloader`
+    - ブートローダーのアンロック（OEMアンロック）：`fastboot oem unlock`
+    - Boot.img抽出 → Magiskでパッチ適用 → Fastbootで書き込み: `fastboot flash boot magisk_patched.img`
+    - 再起動してルート化完了: `fastboot reboot`
+  2. EDL（Emergency Download）モードを使用する方法
+  - デバイスをEDLモードにする
+    - ハードウェアキー（電源＋音量上下）: デバイスによって異なる
+    - ADBコマンド（`adb reboot edl`）
+    - Test Point方式（マザーボードの接点短絡）
+  - Qualcomm EDLツール（bkerler/edlなど）を使用し、boot.img を取得：`python edl.py r boot_a boot.img`
+  - Magiskでパッチ適用後、再度EDL経由でフラッシュ: `python edl.py w boot_a magisk_patched.img`
+  3. 出回っているツールを利用：
+  - [UNLOCKTOOL](https://unlocktool.net/models/?q=Oppo+reno+5): Reset FRP, Factory Resetのみ可能
+
+
+
+- 試したこと（ログ）：
+  1. Fastbootを使用する方法：Fastbootモードに入れず失敗
+    - 「開発者向けオプション」→「OEMロック解除」を有効化し、USBでPCと接続。
+    - デバイスの認識を確認：`adb devices`
+    - Fastbootモードへ移行：`adb reboot bootloader`
+      -  `已进入Fastboot 长按电源6~10秒或重装电池退出`という表示が一瞬出て再起動してしまう。つまり一瞬でこのモードから出てしまう。
+      - この現象はOPPOの他の機種でも確認されていた。
+        - [Recovery/fastboot/download modes howto \| XDA Forums](https://xdaforums.com/t/recovery-fastboot-download-modes-howto.3994957/)
+      - 解決策を探したが見つからなかった。
+  2. EDL（Emergency Download）モードを使用する方法：EDLモードに入れず失敗
+  - デバイスをEDLモードにする
+    - ハードウェアキー（電源＋音量上）: 失敗
+      - リカバリーモードには入れた：（電源＋音量下）
+      - [How to Boot Oppo Reno 5A Recovery Mode and Fastboot Mode - Droid Recovery](https://droidrecovery.com/oppo-reno-5a-recovery-mode/)
+    - ADBコマンド（`adb reboot edl`）: 失敗
+      - 再起動されただけ。
+      - 成功するとUSBのPIDが`0x9008`なので「Qualcomm 9008 Mode」となるはず。
+      - bkerler/edlを試したがデバイスを認識せず。
+        - [GitHub - bkerler/edl: Inofficial Qualcomm Firehose / Sahara / Streaming / Diag Tools :)](https://github.com/bkerler/edl)
+    - Test Point方式（マザーボードの接点短絡）
+      - ハードウェアをいじる気概がないので断念。
+    
 
 知見：
-- 幾つかのツールでCPH2199対応したものが有ったが、Reset FRP, Factory Resetのみ
-  - https://unlocktool.net/models/?q=Oppo+reno+5
 - Qualcommデバイス用のツールを使用してファームウェアを書き換えることは出来るが、古い公式ファームウェアにBLU出来るものが無い。
   - https://support.halabtech.com/index.php?a=downloads&b=folder&id=128600\
   - https://support.halabtech.com/index.php?a=downloads&b=folder&id=128600
 - ADBとFastbootを使用して解除：Fastbootモードに入れないので不可。
 - DeepTesting(DT)アプリでfastbootモードが使えるようになる可能性：非対応機種はDT入れないので不可
   - https://itest.5ch.net/egg/test/read.cgi/android/1517398294/l-
-- カスタムROM（カスタムリカバリ）をインストールして解除: TWRP（Team Win Recovery Project）**のようなカスタムリカバリをインストールし、その後にカスタムROM(Magisk)をフラッシュする方法
-  - Fastbootモードにしないといけないので不可。
-- EDLモード（Emergency Download Mode）を使用して解除: これもしかしたらできるかも。
-  - boot.imgを取得しMagisk Managerで公式ファームウェアから抽出したboot.imgに自動的にパッチを適用しroot権限を提供。修正済みboot.imgをPCに転送し、EDLを使用してフラッシュ。
-  - https://github.com/topjohnwu/Magisk
 - 手順：
   - 公式ファームウェアのダウンロード:
     - https://azrom.net/rom-reno-5a-cph2199-a103op-a101op-all-file-fix-official-firmware/
     - https://support.halabtech.com/index.php?a=downloads&b=folder&id=128600
-  - boot.imgの抽出: ダウンロードしたファームウェア内のboot.imgを取り出す。
-  - Magisk Managerアプリをインストール（Google Playにはないため、公式GitHubページからAPKをダウンロード）。
-    - https://github.com/topjohnwu/Magisk
-  - Magiskが自動的にパッチ適用を行い、magisk_patched.imgというファイルを生成
-  - 修正済みboot.imgをデバイスにフラッシュ: 一般的にQualcomm専用ツール（QFILやbkerler/edlツール）を使用してパーティションをフラッシュ
-    - デバイスをEDLモードに入れる必要があります。これには、QPSTやQFIL、bkerler/edlのツールを使用してデバイスを認識させます。
-    - 通常、EDLモードに入れる方法には、特定のボタン操作（ボタンを押しながらデバイスを接続）や、特定のツール（例：EDLケーブル）を使用する方法があります。
-    - QFILやedlツールは通常、full firmwareのフラッシュがメインですが、手動でboot.imgのみにフラッシュを絞ることも可能です。
-- 注意：
-  - boot.img以外のパーティションを誤って書き換えると、デバイスが起動しなくなる
-  - 通常、EDLモードではパーティション単位でのフラッシュが行われますが、これにはツールやドライバーが必要
-- 使えそうなツール
   - https://note.com/reindex/n/nbcaf08c67359
 - ROOT化にbootloaderのアンロックは必ずしも必要ではない？：https://xdaforums.com/t/how-to-root-android-device-with-factory-disabled-fastboot.4341307/
+
+## fastboot出来ないデバイスをルート化する手順まとめ
+
+- 1. boot.imgを取得
+  - EDLモードを使ってファームウェアのバックアップを取る
+    - USBデバッグ経由で「adb reboot edl」を実行したが、edlモードに入れない。
+    - 上手く入れると：USBのPIDが`0x9008`なので「Qualcomm 9008 Mode」となる。
+  - ファームウェアのダウンロード（なるべく古いバージョンを試す）
+    - Now: C.42
+    - Old：CPH2199export_11_A.01_2021041419395298.zip
+  - ファームウェアの解凍・boot.imgの抽出（OFP ExtractorやMTK Extractorを使用）
+  
+- ソースによると、デバイスがハードブリック状態、つまりFastbootモードにもアクセスできない場合に、ハードウェアキーの組み合わせを使ってEDLモードに起動する必要があるとされています。EDLモードに入るためのハードウェアキーの組み合わせは、OEMによって異なります。
+**OPPOデバイスのEDLモードに入るためのキーの組み合わせは、デバイスのモデルによって異なる可能性があります。**OPPOの公式サポートサイトやフォーラムで、お使いのデバイスのモデルに合った情報を探してみてください。
+デバイスが「EDL（9008）」モード
+
+- OEMロック解除が設定にあったので、USBに指してadbコマンドでFastbootモードに入る
+- `adb devices`：デバイスがリストに表示された。
+- `adb reboot bootloader`: BLU起動
+  - `已进入Fastboot 长按电源6~10秒或重装电池退出`という表示が一瞬出て再起動してしまう。
 
 
 ## CPH2199の準備
@@ -75,3 +129,10 @@ tags: [Android, Kali, Smartphone]
 - 参考：
   - [Kali NetHunter \| Kali Linux Documentation](https://www.kali.org/docs/nethunter/#20-nethunter-supported-devices-and-roms)
   - [\[GUIDE\] How to install Kali NetHunter on any android Rooted device? \| XDA Forums](https://xdaforums.com/t/guide-how-to-install-kali-nethunter-on-any-android-rooted-device.4624197/)
+  - EDLの公式ツールのleak：[General - EDL Flash Tool Leak \| XDA Forums](https://xdaforums.com/t/edl-flash-tool-leak.4494211/)
+  - 様々なEDLモードの入り方：[How to Boot any Android Device to EDL Mode (Bricked/Unbricked)](https://droidwin.com/boot-android-edl-mode/#Method_1_Boot_Android_Device_to_EDL_Mode_via_ADB_Command)
+  - windows版のadb driver: [Oppo Reno 5A USB Driver, ADB Driver and Fastboot Driver \[DOWNLOAD\] - Android ADB Driver](https://androidadbdriver.com/oppo-reno-5a-usb-drivers/)
+  - [QualcommのEDLモードの話 - ラック・セキュリティごった煮ブログ](https://devblog.lac.co.jp/entry/20221206)
+  - [EDL - Get Physical dump from EDL](https://forensic.manuals.mobiledit.com/MM/physical-extraction-edl-method)
+  - [realme GT Neo5 SEのブートローダーアンロック、Root化、Magisk導入方法](https://mitanyan98.hatenablog.com/entry/2023/05/30/151602#%E4%B8%AD%E5%9B%BD%E7%89%88%E3%81%AEOppo%E7%B3%BBOS%E3%81%AF%E7%99%96%E3%81%A4%E3%82%88)
+  - [Deep TEST fot OPPO RENO ACE(unlock bootloader) \| XDA Forums](https://xdaforums.com/t/deep-test-fot-oppo-reno-ace-unlock-bootloader.4093589/)
