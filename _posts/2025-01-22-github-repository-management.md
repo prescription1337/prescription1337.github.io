@@ -35,6 +35,10 @@ tags: [GitHub Pages, Github]
       - `git remote set-url origin --push git@github.com:prescription1337/prescription1337.github.io.git`
     - 確認: `git remote -v`
       - ![alt text](../assets/images/2025-01-23_09-08.png)
+    - fetch(pull)がhttpsを利用しているので、変更
+      - `git remote set-url origin git@github.com:prescription1337/prescription1337.github.io.git`
+    - 再度確認: `git remote -v`
+      - ![alt text](../assets/images/2025-01-23_09-42.png)
   4. SSH接続の確認
     - SSH接続が正しく動作するか確認: `ssh -T git@github.com`
     - 成功例：
