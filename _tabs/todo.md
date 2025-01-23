@@ -28,6 +28,7 @@ order: 4
 - [ ] monero guiのlinuxへのダウンロードとwindowsからの削除
 - [ ] bisqのlinuxへの導入\
 - [ ] 0-click deanonymization attack
+- [ ] Wifi-Pineappleで学ぶネットワーク
 
 
 ## Done
@@ -36,7 +37,7 @@ order: 4
 - [x] Amazon Audibleの音源取得と音声合成: [AAXC File Conversion \| Prescription](https://prescription1337.github.io/posts/AAXC-file-conversion/)
 - [x] badusb作成とスクリプトの実験: [BadUSB with Raspberry Pi Pico \| Prescription](https://prescription1337.github.io/posts/BadUSB/)
 - [x] AndroidスマホにNetHunter Pro導入: [Installing Kali NetHunter on Android \| Prescription](https://prescription1337.github.io/posts/Installing-Kali-NetHunter-on-Android/)
-- [x] Wifi-Pineappleのクローン作成: 
+- [x] Wifi-Pineappleのクローン作成: [Clone WiFi Pineapple \| Prescription](https://prescription1337.github.io/posts/Wifi-Pineapple-Clone/)
 
 
 

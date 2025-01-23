@@ -1,8 +1,8 @@
 ---
 title: "Clone WiFi Pineapple"
 date: "2025-01-23 00:00:00 +0900"
-categories: [Technology, hacking]
-tags: [Hak5, WiFi Pineapple]
+categories: [Technology, Hacking]
+tags: [Hak5, WiFi-Pineapple]
 ---
 
 # WifiルーターをHak5のWiFi Pineappleへ
