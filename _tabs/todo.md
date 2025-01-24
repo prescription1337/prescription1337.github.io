@@ -18,7 +18,6 @@ order: 4
 - [ ] BTC追跡: IPとWallet
 - [ ] AndroidスマホにGrapheneOSの導入
 - [ ] マルウェアの実験
-- [ ] Lenovo p440tのupgradeについての記事作成
 - [ ] badusbのリバースシェルとクラウドへのデータアップロード
 - [ ] SNS(Tiktok, Instagram)自動化スクリプトの調整とまとめ
 - [ ] 仮想通貨もしくはその他の取引のbot
@@ -38,6 +37,7 @@ order: 4
 - [x] badusb作成とスクリプトの実験: [BadUSB with Raspberry Pi Pico \| Prescription](https://prescription1337.github.io/posts/BadUSB/)
 - [x] AndroidスマホにNetHunter Pro導入: [Installing Kali NetHunter on Android \| Prescription](https://prescription1337.github.io/posts/Installing-Kali-NetHunter-on-Android/)
 - [x] Wifi-Pineappleのクローン作成: [Clone WiFi Pineapple \| Prescription](https://prescription1337.github.io/posts/Wifi-Pineapple-Clone/)
+- [x] Lenovo p440tのupgradeについて
 
 
 
