@@ -25,9 +25,9 @@ order: 4
 - [ ] Youtubeへのコンテンツ作成と知見についてのまとめ
 - [ ] dockerについて
 - [ ] monero guiのlinuxへのダウンロードとwindowsからの削除
-- [ ] bisqのlinuxへの導入\
 - [ ] 0-click deanonymization attack
 - [ ] Wifi-Pineappleで学ぶネットワーク
+- [ ] bitcoin full node with Bitcoin Knots
 
 
 ## Done
@@ -37,7 +37,8 @@ order: 4
 - [x] badusb作成とスクリプトの実験: [BadUSB with Raspberry Pi Pico \| Prescription](https://prescription1337.github.io/posts/BadUSB/)
 - [x] AndroidスマホにNetHunter Pro導入: [Installing Kali NetHunter on Android \| Prescription](https://prescription1337.github.io/posts/Installing-Kali-NetHunter-on-Android/)
 - [x] Wifi-Pineappleのクローン作成: [Clone WiFi Pineapple \| Prescription](https://prescription1337.github.io/posts/Wifi-Pineapple-Clone/)
-- [x] Lenovo p440tのupgradeについて
+- [x] Lenovo p440tのupgradeについて: [Upgrade Lenovo t440p \| Prescription](https://prescription1337.github.io/posts/Lenovo-T440P-Upgrade/)
+- [x] bisqについて
 
 
 

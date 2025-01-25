@@ -2,10 +2,10 @@
 title: "Run Monero Full Node"
 date: "2025-01-24 00:00:00 +0900"
 categories: [Technology, Crypto]
-tags: [Monero, Crypto]
+tags: [Monero, Crypto, Monero, XMR]
 ---
 
-# LinuxのLaptopのSSDにMonero Full Nodeを構築
+# LinuxにMonero Full Nodeを構築
 背景
 - Windowsメインホストの容量の枯渇。
 - LinuxでCrypto系はすべて管理したかった。
