@@ -6,134 +6,169 @@ tags: [Crypto, Bitcoin, BTC, Bitcoin Knots]
 ---
 
 # LinuxにBitcoin Full NodeをBitcoin Knotsで構築
+
 背景
 - BTCは匿名性が低いことはなんとなく知っていた。
 - 匿名性かつセキュアな環境でBTCを管理したかった。
 
-所感: 
+所感
 - Bridge導入でめちゃくちゃハマった。
 - これでBTCもかなり匿名性の高い方法で管理と取引ができるようになった。
 
-課題: 
-- Sparrow walletを導入
+課題
+- Sparrow Walletを導入
 - Bisqの設定を見直し匿名性を上げる
 
+---
 
-## 導入
-- 公式github通りにインストールしていく
-- [Github bitcoin knots build-unix](https://github.com/bitcoinknots/bitcoin/blob/27.x-knots/doc/build-unix.md)
+## 導入手順
+### 1. ダウンロード  
+必要な依存関係のインストール:
+```bash
+sudo apt-get update
+sudo apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3
+```
 
-1. ダウンロード  
-   必要な依存関係のインストール: 
-   `sudo apt-get update`
-   `sudo apt-get install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3`
+### 2. ライブラリのインストール
+```bash
+sudo apt-get install -y libevent-dev libboost-dev  # イベントライブラリ & ブーストライブラリ
+sudo apt-get install libzmq3-dev  # ZMQライブラリ
+sudo apt install systemtap-sdt-dev  # USDTライブラリ
+sudo apt-get install -y qtbase5-dev qttools5-dev qttools5-dev-tools qtwayland5  # GUIサポート
+sudo apt-get install -y libqrencode-dev  # QRコード生成ライブラリ（オプション）
+```
 
-2. ライブラリのインストール:
-   イベントライブラリとブーストライブラリ: `sudo apt-get install -y libevent-dev libboost-dev`
-   ZMQライブラリ: `sudo apt-get install libzmq3-dev`
-   USDTライブラリ: `sudo apt install systemtap-sdt-dev`
-   GUIサポート（bitcoin-qtをビルドする場合）: `sudo apt-get install -y qtbase5-dev qttools5-dev qttools5-dev-tools qtwayland5`
-   QRコード生成ライブラリ（オプション）: `sudo apt-get install -y libqrencode-dev`
+### 3. GitHubからBitcoin Knotsのソースコードをクローン
+```bash
+git clone https://github.com/bitcoinknots/bitcoin.git
+cd bitcoin
+```
 
-3. GitHubからBitcoin Knotsのソースコードをクローン
-   `git clone https://github.com/bitcoinknots/bitcoin.git`
-   `cd bitcoin`
+### 4. ビルドの構成と実行
+```bash
+./autogen.sh #ビルドシステムの初期化
+./configure --disable-wallet  # Sparrow Walletを使用するためビルトインウォレット無効化
+make
+```
 
-4. ビルドの構成(configure)と実行
-   ビルドシステムの初期化: `./autogen.sh`
-   ウォレットを無効化するし、Makefileが生成（フルノードのみ実行する場合）: `./configure --disable-wallet`
-   ⇢ sparrow walletを利用するためbuilt-inのwalletはいらないため。
-   ビルド実行: `make`
-   ⇢ `make: *** No targets specified and no makefile found.  Stop.`のようなエラーがでたらログの内容をChatGPTに投げて解決。
-   ⇢ `rsvg-convert`がシステムにインストールされていなかったのでインストール: `sudo apt-get install librsvg2-bin`
-   ビルド再実行: `make`
-   `Nothing to be done for 'all'`と`Nothing to be done for 'all-am'`と出れば完了。
+#### エラー対処
+`make: *** No targets specified and no makefile found. Stop.` の場合:
+```bash
+sudo apt-get install librsvg2-bin  # rsvg-convertのインストール
+make  # 再実行
+```
 
-5. ブロックチェーンの同期を開始:フルノードだと現在700GB前後
-   Bitcoinのフルノードがブロックチェーンデータを保存: `./src/bitcoind -datadir=/media/bentham/SSD2/BTC/full_node_data`
-   進捗ログの確認：`tail -f /media/bentham/SSD2/BTC/full_node_data/debug.log`
-   12時間前後で完了
-   起動の確認：`bitcoin-qt -datadir=/media/bentham/SSD2/BTC/full_node_data`
-   ![alt text](../assets/images/2025-01-26_09-30.png)
-   ![alt text](../assets/images/2025-01-26_09-31.png)
+ビルド成功の確認:
+```
+Nothing to be done for 'all'
+Nothing to be done for 'all-am'
+```
 
-6. 起動方法の変更
-   bitcoin.conf にデフォルトのデータディレクトリを記載:`nano ~/.bitcoin/bitcoin.conf`
-   追加:`datadir=/media/bentham/SSD2/BTC/full_node_data`
-   起動の確認完了: `bitcoin-qt `と`bitcoind`
+### 5. ブロックチェーンの同期開始
+```bash
+./src/bitcoind -datadir=/media/bentham/SSD2/BTC/full_node_data
+tail -f /media/bentham/SSD2/BTC/full_node_data/debug.log  # 進捗ログ確認
+```
+約12時間前後で完了。
+
+### 6. 起動方法の変更
+`nano ~/.bitcoin/bitcoin.conf` に以下を追加:
+```
+datadir=/media/bentham/SSD2/BTC/full_node_data
+```
+起動コマンド:
+```bash
+bitcoin-qt
+bitcoind
+```
+
+- ![alt text](../assets/images/2025-01-26_09-30.png)
+- ![alt text](../assets/images/2025-01-26_09-31.png)
+
+---
 
 ## セキュアな設定
-- フルノードの利点を活かす
 
-1. RPCのセキュリティ強化
-   RPCは外部からノードにアクセスするためのインターフェースであるので適切に設定する。
-   RPCユーザーとパスワードの設定: 
-   `nano ~/.bitcoin/bitcoin.conf`
-   ```bash
-   rpcuser=yourusername
-   rpcpassword=yourstrongpassword
-   ```
-   RPCポートの制限：ローカルネットワークだけにアクセスを許可
-   `nano ~/.bitcoin/bitcoin.conf`
-   `rpcbind=127.0.0.1`を追加
+### 1. RPCのセキュリティ強化
+設定ファイルを編集:
+```bash
+nano ~/.bitcoin/bitcoin.conf
+```
+以下を追加:
+```bash
+rpcuser=yourusername
+rpcpassword=yourstrongpassword
+rpcbind=127.0.0.1 #ローカルネットワークだけにアクセスを許可
+```
 
-2. ノードのセキュリティ強化
-   Bitcoinノードが接続するピア（他のノード）の最大数を制限する設定: デフォルトは125
-   この設定は、**P2P接続（Bitcoinネットワークの他のノードとの接続）**に関するもの
-   接続数が 少なすぎることで特定されるリスクを避けるためには、最小限の接続数で安全に運用することが重要
-   `nano ~/.bitcoin/bitcoin.conf`
-   `maxconnections=XX`  最大接続数をXXに設定(20-60)くらいで設定するのが良い。
+### 2. ノードのセキュリティ強化
+最大接続数の制限:
+```bash
+nano ~/.bitcoin/bitcoin.conf
+maxconnections=50
+```
 
-3. 匿名性の強化
-   Torを使用した通信の匿名化
-      ```bash
-      proxy=127.0.0.1:9050
-      bind=127.0.0.1
-      listen=1
-      discover=1
-      dnsseed=0
-      onlynet=onion
-      ```
-      tor起動:`tor`
-      bitcoin knot起動:`bitcoin-qt `
-      bitcoin-qtがTorネットワーク上で動作していることを確認:
-      ![alt text](../assets/images/2025-01-26_12-21.png)
-      paringタブでもOnionアドレスを確認
-   Bridgeの設定
-      1. Bridgeを取得: 
-         Torブラウザで接続しbridgeを取得:`https://bridges.torproject.org/`
-            get bridges ⇢ obsf4: ２つのアドレスが出るのでコピー
-         取得したアドレスをチェック: `https://metrics.torproject.org/rs.html`
-            速度やadditional flagでセキュリティ上問題ないかチェック
-      2. Torの設定にBridgeを追加
-         torrcファイルを開く: `sudo nano /etc/tor/torrc`
-         ファイル末尾に追加してBridgeを設定:
-         ![alt text](../assets/images/2025-01-26_20-15.png)
-         obfs4プラグインのインストール:`sudo apt install obfs4proxy`
-   Bridgeを通したTor接続の確認: めちゃくちゃハマった
-      通常の起動では使えるブリッジを設定しても接続できなかった: `tor`も`sudo systemctl start tor`不可。
-      tor-browserでbuilt-in bridgeもカスタムブリッジも接続不可。
-      windowsのPCで試すと、tor-browserでのブリッジ成功した。← 謎
-      `sudo systemctl status tor@default.service`: この起動方法で成功した
-         ![alt text](../assets/images/2025-01-26_20-25.png)
+### 3. 匿名性の強化
+Torを使用した通信の匿名化:
+```bash
+proxy=127.0.0.1:9050
+bind=127.0.0.1
+listen=1
+discover=1
+dnsseed=0
+onlynet=onion
+```
+Torの起動:
+```bash
+tor
+bitcoin-qt
+```
 
-4. bitcoin knot起動
-   必ず最初にtorを起動:``sudo systemctl status tor@default.service``
-   その後に起動:`bitcoin-qt`
-         
+- ![alt text](../assets/images/2025-01-26_12-21.png)
+
+#### Bridgeの設定 (ハマった)
+1. [Tor公式サイト](https://bridges.torproject.org/) でobfs4ブリッジを取得。
+2. [ブリッジのチェック](https://metrics.torproject.org/rs.html)
+3. `nano /etc/tor/torrc` を編集し、取得したブリッジを追加。
+- ![alt text](../assets/images/2025-01-26_20-15.png)
+4. obfs4proxyをインストール:
+```bash
+sudo apt install obfs4proxy
+```
+
+Torの起動方法:
+```bash
+sudo systemctl start tor@default.service
+```
+- ![alt text](../assets/images/2025-01-26_20-25.png)
+
+
+注意
+- 通常の起動では使えるブリッジを設定しても接続できなかった: `tor`も`sudo systemctl start tor`不可。
+- tor-browserでbuilt-in bridgeもカスタムブリッジも接続不可。
+- windowsのPCで試すと、tor-browserでのブリッジ成功した。← 謎
+`sudo systemctl status tor@default.service`: この起動方法でのみ成功した。
+
+### 4. Bitcoin Knots起動
+```bash
+sudo systemctl status tor@default.service  # Tor起動確認
+bitcoin-qt
+```
+
+---
 
 ## 理解促進
 
-- RPC (Remote Procedure Call) 
-   - リモートでコンピュータに対して命令を実行させる仕組み
-   - bitcoind の場合、RPCを使用することで、Bitcoinノードに対してブロックやトランザクション情報を取得したり、送金を行ったりすることができる。
-   - 例えば、ラップトップ上にセットアップしたBitcoinノード（bitcoind）に対して、外部から以下のような操作をすることが可能：
-      - 現在の残高を取得する
-      - 送金をリクエストする
-      - トランザクション履歴を取得する
-   - この操作は、ローカルのbitcoind ノードをコマンドラインやスクリプトから呼び出すことで行うが、RPCを使うことで、外部のコンピュータやサーバーからも同じように操作することができるようになる。
+### RPC (Remote Procedure Call) とは？
+- ノードに対してブロックやトランザクション情報を取得したり、送金を行ったりする仕組み。
+- 外部のコンピュータからも操作可能。
+- 例:
+  ```bash
+  bitcoin-cli -rpcuser=yourusername -rpcpassword=yourstrongpassword getblockcount
+  ```
 
+---
 
-参考：
-- [Github bitcoin knots build-unix](https://github.com/bitcoinknots/bitcoin/blob/27.x-knots/doc/build-unix.md)
+## 参考
+- [Bitcoin Knots GitHub Build Guide](https://github.com/bitcoinknots/bitcoin/blob/27.x-knots/doc/build-unix.md)
 
