@@ -10,6 +10,15 @@ tags: [Crypto, Bitcoin, BTC, Bitcoin Knots]
 - BTCは匿名性が低いことはなんとなく知っていた。
 - 匿名性かつセキュアな環境でBTCを管理したかった。
 
+所感: 
+- Bridge導入でめちゃくちゃハマった。
+- これでBTCもかなり匿名性の高い方法で管理と取引ができるようになった。
+
+課題: 
+- Sparrow walletを導入
+- Bisqの設定を見直し匿名性を上げる
+
+
 ## 導入
 - 公式github通りにインストールしていく
 - [Github bitcoin knots build-unix](https://github.com/bitcoinknots/bitcoin/blob/27.x-knots/doc/build-unix.md)
@@ -99,7 +108,18 @@ tags: [Crypto, Bitcoin, BTC, Bitcoin Knots]
       2. Torの設定にBridgeを追加
          torrcファイルを開く: `sudo nano /etc/tor/torrc`
          ファイル末尾に追加してBridgeを設定:
+         ![alt text](../assets/images/2025-01-26_20-15.png)
          obfs4プラグインのインストール:`sudo apt install obfs4proxy`
+   Bridgeを通したTor接続の確認: めちゃくちゃハマった
+      通常の起動では使えるブリッジを設定しても接続できなかった: `tor`も`sudo systemctl start tor`不可。
+      tor-browserでbuilt-in bridgeもカスタムブリッジも接続不可。
+      windowsのPCで試すと、tor-browserでのブリッジ成功した。← 謎
+      `sudo systemctl status tor@default.service`: この起動方法で成功した
+         ![alt text](../assets/images/2025-01-26_20-25.png)
+
+4. bitcoin knot起動
+   必ず最初にtorを起動:``sudo systemctl status tor@default.service``
+   その後に起動:`bitcoin-qt`
          
 
 ## 理解促進
@@ -112,7 +132,6 @@ tags: [Crypto, Bitcoin, BTC, Bitcoin Knots]
       - 送金をリクエストする
       - トランザクション履歴を取得する
    - この操作は、ローカルのbitcoind ノードをコマンドラインやスクリプトから呼び出すことで行うが、RPCを使うことで、外部のコンピュータやサーバーからも同じように操作することができるようになる。
-
 
 
 参考：
