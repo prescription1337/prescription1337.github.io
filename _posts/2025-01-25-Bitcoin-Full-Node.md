@@ -13,10 +13,10 @@ tags: [Crypto, Bitcoin, BTC, Bitcoin Knots]
 
 所感
 - Bridge導入でめちゃくちゃハマった。
+- Sparrow Walletのクッキー生成でハマった。rpcの設定を`bitcoin.conf`で設定されているとbitcoin knotのクッキーが生成されない。
 - これでBTCもかなり匿名性の高い方法で管理と取引ができるようになった。
 
 課題
-- Sparrow Walletを導入
 - Bisqの設定を見直し匿名性を上げる
 
 ---
@@ -47,7 +47,7 @@ cd bitcoin
 ### 4. ビルドの構成と実行
 ```bash
 ./autogen.sh #ビルドシステムの初期化
-./configure --disable-wallet  # Sparrow Walletを使用するためビルトインウォレット無効化
+./configure
 make
 ```
 
@@ -89,7 +89,7 @@ bitcoind
 
 ## セキュアな設定
 
-### 1. RPCのセキュリティ強化
+### 1. RPCのセキュリティ強化(RPCを利用するなら。今回はクッキーでの認証のためコメントアウトでよい)
 設定ファイルを編集:
 ```bash
 nano ~/.bitcoin/bitcoin.conf
@@ -149,7 +149,7 @@ sudo systemctl start tor@default.service
 - windowsのPCで試すと、tor-browserでのブリッジ成功した。← 謎
 `sudo systemctl status tor@default.service`: この起動方法でのみ成功した。
 
-### 4. Bitcoin Knots起動
+
 ```bash
 sudo systemctl status tor@default.service  # Tor起動確認
 bitcoin-qt
@@ -157,6 +157,32 @@ bitcoin-qt
 
 ---
 
+## Sparrow Wallet導入
+- Sparrow Wallet ダウンロード: [Download](https://sparrowwallet.com/download/)
+- インストール: `sudo dpkg -i sparrow_2.0.0-1_amd64.deb`
+-  `nano ~/.bitcoin/bitcoin.conf `修正
+- ![alt text](../assets/images/2025-01-27_21-31.png)
+- [Prerequistes](https://sparrowwallet.com/docs/connect-node.html#prerequistes)
+- 起動: ` /opt/sparrow/bin/Sparrow`
+※上記を起動前に`sudo systemctl status tor@default.service `と`bitcoin-qt`でフルノードをtorと接続しておく。
+- 最初にwalletを作成。その後にどのようにfull nodeと接続するかを設定する。
+   - クッキー利用
+   - RPC利用
+- full nodeが入っている場所と同じローカル環境で管理する場合はcookieによる認証が最も安全。今回はこの方法を利用する。
+- ![alt text](../assets/images/2025-01-27_21-20.png)
+- RPCを利用して認証したい場合: `nano ~/.bitcoin/bitcoin.conf `を修正する必要がある。
+- RPCは他のデバイスや他のネットワークの範囲を指定したりもできるので柔軟性が高い設定ができるが、今回はローカルのみで最もセキュアな設定。
+- ![alt text](../assets/images/2025-01-27_21-30.png)
+※ハマった点: RPCを`nano ~/.bitcoin/bitcoin.conf `に設定した状態でフルノード動かしてもcookieファイルが生成されずにエラーが出る。
+- 最後にwalletとfull nodeの接続にtorを使うかどうかを選択できる(Use Proxy)。
+- 今回すでにfull nodeをBridgeを使ったtorの上で動かしているので、わざわざWalletをtorを通してfull nodeに接続する意味があまりない。
+- しかもSparrow Walletの仕様上他の外部アドレスへの接続にはプロキシを使用されると公式にある。なので設定しない。しかしtorとwalletの接続は確認できた。
+```bash
+You can also configure a Tor proxy. Sparrow won’t use the proxy to connect to Bitcoin Core unless you specify a .onion address in the URL. But, it will use the proxy for all other external addresses, such as fetching exchange or fee rates. Although connecting to Bitcoin Core over Tor is possible, it is fairly slow. Consider using a private Electrum server instead if you need to connect over Tor.
+```
+- ![alt text](../assets/images/2025-01-27_21-52.png)
+- 成功
+- 
 ## 理解促進
 
 ### RPC (Remote Procedure Call) とは？
