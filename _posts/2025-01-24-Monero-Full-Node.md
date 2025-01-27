@@ -29,6 +29,20 @@ tags: [Monero, Crypto, Monero, XMR]
 
 5. 不要になったデータの削除: `rm -rf ~/.bitmonero`
 
+6. シンボリックリンクを作成して起動準備
+   わざわざ実行ファイルのある場所まで移動するのが面倒。
+   `sudo ln -s /media/bentham/SSD1/Monero/monero-gui-v0.18.3.4/monero-wallet-gui /usr/local/bin/monero-wallet-gui`
+- 仕組み:
+   - シンボリックリンク作成:
+      - `/usr/local/bin/monero-wallet-gui`にシンボリックリンクを作成した。
+   - `/usr/local/bin/`:
+      - この場所はシステムの PATH に含まれていて、実行可能なコマンドを探す場所。
+   - `PATH`環境変数:
+      - シェルがコマンドを実行するために参照するディレクトリのリスト。
+   - コマンド実行の流れ:
+      - ターミナルで monero-wallet-gui を入力。
+      - シェルは PATH に含まれるディレクトリを順番に検索。
+      - `/usr/local/bin/monero-wallet-gui`を見つけて、リンク先の実行ファイルを実行。
 
 参考：
 - [Linux Monero GUI Wallet With Full Node Tutorial](https://www.youtube.com/watch?v=8hrWaDVfqOU)
