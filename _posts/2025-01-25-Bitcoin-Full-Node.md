@@ -182,8 +182,34 @@ You can also configure a Tor proxy. Sparrow won’t use the proxy to connect to 
 ```
 - ![alt text](../assets/images/2025-01-27_21-52.png)
 - 成功
-- 
+
+## Bisqの設定と流れ
+1.Bisqを起動し、Torを通じてローカルフルノードに接続する。
+- Bisq seed restore / Passsword set
+- BTC / Monero アカウントセット
+2.Bisqウォレットでウォッチキーを設定し、Sparrow Walletの残高を監視する。（オプション）
+3.Bisqで取引を行う際に、Bisqウォレットを利用するか、Sparrow Walletから手動で送金する。
+4.取引完了後、BisqウォレットからSparrow Walletに資金を移動させる。
+5.Sparrow Walletで資金を管理する
+
 ## 理解促進
+
+### Tor Bridgeについて
+- 非公開のTorエントリーノード。検閲回避やネットワーク制限を突破するために使用。
+- 通常のTor接続との違い  
+
+| 項目              | 通常のTor                  | Tor Bridge               |
+|-------------------|---------------------------|--------------------------|
+| エントリーポイント | 公開ノードを使用           | 非公開Bridgeを使用       |
+| 検閲耐性          | ブロックされやすい         | ブロックされにくい       |
+| 匿名性            | 高い                      | 同等の匿名性             |
+
+- 特徴
+  - **非公開性**: リストに載らず、検閲が困難。
+  - **Pluggable Transports**: トラフィックを難読化（例: Obfs4, Meek）。
+  - **用途**: 検閲回避や安全な接続。
+- ソース：
+  - [Tor Bridge - Youtube](https://www.youtube.com/watch?v=Avp2P_C5PMU)
 
 ### RPC (Remote Procedure Call) とは？
 - ノードに対してブロックやトランザクション情報を取得したり、送金を行ったりする仕組み。
