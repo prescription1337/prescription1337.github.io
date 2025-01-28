@@ -223,4 +223,6 @@ You can also configure a Tor proxy. Sparrow won’t use the proxy to connect to 
 
 ## 参考
 - [Bitcoin Knots GitHub Build Guide](https://github.com/bitcoinknots/bitcoin/blob/27.x-knots/doc/build-unix.md)
-
+- [Bitcoin Knots: A Better Bitcoin Client](https://blockdyor.com/bitcoin-knots/)
+- [ビットコイン（BTC）は追跡できる？ビットコインアドレスの概要と合わせて解説](https://coin.z.com/jp/column/bitcoin-tracking/)
+- [learn me a bitcoin](https://learnmeabitcoin.com/)

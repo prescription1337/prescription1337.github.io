@@ -47,4 +47,5 @@ tags: [Monero, Crypto, Monero, XMR]
 参考：
 - [Linux Monero GUI Wallet With Full Node Tutorial](https://www.youtube.com/watch?v=8hrWaDVfqOU)
 - [How Monero Users Get Traced (RUN YOUR OWN NODE!)](https://www.youtube.com/watch?v=WkphgF6Hn4w)
+- [xmrchain.net & Explore.Moneroworld.com](https://xmrchain.net/)
 
