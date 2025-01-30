@@ -81,6 +81,28 @@ Settings » Security & Privacy » Exploit protection
 
 ### 3.VPN導入
 - APKをダウンロード：[Android mullvad apk](https://mullvad.net/ja/download/vpn/android)
+- USB の設定でファイル転送を許可して移動
+- ダウンロード
+- 設定（WireGuard）
+まだwifiなどで接続しない。
+
+### 4. アプリケーション選択
+- orbot: torvpn
+- Obtainium: アプリの自動更新とチェック: [Obtainium - YouTube](https://www.youtube.com/watch?v=JiN37bn0OE8)
+- 
+
+### 5. メモ
+- SNSやgmailなどは他のプロファイルを作ってそこで管理
+- official app repository からアプリをダウンロードもしくはapkを公式からダウンロードするのがセキュア。
+- それぞれのプロファイルのサンドボックス上からgoogle play stor →appをインストール
+- Mullvad VPNは5つのデバイスまで登録可能。Owner + 4 プロファイルまでVPN登録できる。
+- 
+- 
+疑問
+- プロファイル毎にMACは変わるのか？
+- 
+
+### 6. 経路
 
 
 ソース
