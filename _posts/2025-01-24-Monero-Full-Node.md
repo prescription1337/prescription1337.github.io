@@ -44,6 +44,10 @@ tags: [Monero, Crypto, Monero, XMR]
       - シェルは PATH に含まれるディレクトリを順番に検索。
       - `/usr/local/bin/monero-wallet-gui`を見つけて、リンク先の実行ファイルを実行。
 
+## tor上でノードを動かす
+
+- 
+
 参考：
 - [Linux Monero GUI Wallet With Full Node Tutorial](https://www.youtube.com/watch?v=8hrWaDVfqOU)
 - [How Monero Users Get Traced (RUN YOUR OWN NODE!)](https://www.youtube.com/watch?v=WkphgF6Hn4w)
