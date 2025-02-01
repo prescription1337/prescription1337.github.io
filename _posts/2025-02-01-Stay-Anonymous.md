@@ -50,22 +50,13 @@ tags: [GraphineOS, Mullvad, VPN, SNS, Monero]
 - カフェの無料wifiでのsns作成に関して(GraphineOS)
 - Gmail: 成功
 - TikTok: 成功
-- Instagram: 失敗(180day suspend): 次はデータsimで試す
-- X
+- Instagram: 失敗(180day suspend): データsimでも失敗したので、sms sim取得後に電話番号登録がベスト
+- X: 成功
 - Line: 電話番号必須。がchomebookで取得しQRコードで移転する方法で可能という情報あり(https://discuss.grapheneos.org/d/18580-line-messenger-cannot-create-new-account)。
-
 - 知見
 - sms有りのsimを匿名で取得できる方法があればベスト。人の多い場所でGrapheneOSを利用すればsnsアカウント作成はほぼ匿名でできる
+- SMS付きのSIMを現金で購入出来る店舗を発見し購入。データSIMを購入出来る店舗（大手では無いローカル店）へ実際に行き、店員に聞く。HPにはデータsimの販売の情報しか無かったが、直接購入可能なSMSSIMも販売していた。大きな収穫。
 - その後はsimを抜いてmullvad経由のwifi経由でアカウント運用。注意：mullvadの日本サーバーはownedでは無くrentedであるため、いくらログを保存していないとしていても利用者には判別不能。つまり最悪の場合、サーバーにログがあり、ISPとの照合により自宅バレ。しかしどうなんだろう。snsのアカウントは個人情報紐づいておらず、実際の運営者が自分とは特定できないはず。その状態で逮捕状請求し通るのか？そしてデバイスが押収されても、解読が難しＰＷやデバイスなら客観的証拠無しで不起訴。もっと想定して各パターン別の対策と対応も考える。
-
-
-## 導入と設定
-
-- ダウンロード&インストール
-- 公式のネットワークに参加
-
-
-
 
 参考：
 - https://www.youtube.com/watch?v=16c03c4kG8k
