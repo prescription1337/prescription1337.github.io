@@ -46,7 +46,12 @@ tags: [Monero, Crypto, Monero, XMR]
 
 ## tor上でノードを動かす
 
-- 
+- 失敗
+- https://getmonero.dev/running-node/open-node-tor-onion.html
+- https://www.maketecheasier.com/host-monero-node-on-tor-linux/
+- https://github.com/monero-project/monero?tab=readme-ov-file#using-tor
+- https://github.com/monero-project/monero/blob/master/docs/ANONYMITY_NETWORKS.md
+
 
 参考：
 - [Linux Monero GUI Wallet With Full Node Tutorial](https://www.youtube.com/watch?v=8hrWaDVfqOU)
