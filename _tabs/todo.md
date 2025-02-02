@@ -23,6 +23,42 @@ order: 4
 - [ ] dockerについて
 - [ ] 0-click deanonymization attack
 - [ ] Wifi-Pineappleで学ぶネットワーク
+- [ ] BTC追跡: IPとWalletとBTC
+- [ ] Main PCの分解とUpdate
+- [ ] Monero to Prepaid test (https://stealths.net/product/visa-global-prepaid, https://trocador.app/en/prepaidcards/, https://monerica.com/)
+- [ ] Crypt to Cash exit Anonimously: 
+- [ ] 段階の考え方：Get Crypt → Cash Out シンプルに。その中で幾つかの候補を考えていく。
+- https://stealthex.io/buy-pairs/us-dollar-to-monero/
+- get BTC and Monbero on P2P ()
+- 
+
+## Links
+SIM/eSIM
+- https://discuss.grapheneos.org/d/15471-guide-on-how-to-anonymously-use-any-network-provider-using-disposable-esims
+- https://stealths.net/esim/japan
+
+Privacy Overall
+- https://github.com/lissy93/awesome-privacy?tab=readme-ov-file#virtual-phone-numbers
+
+Crypt:
+- https://kycnot.me/
+- https://trocador.app/en/prepaidcards/
+- https://www.reddit.com/r/SwagBucks/comments/188vhho/finally_found_somewhere_to_use_the_virtual/
+
+Blogs:
+- https://blog.exploit.org/caster-nihilism/
+
+SMS Varification
+
+Tor
+- https://gigazine.net/news/20240313-tor-webtunnel-mimic-https-traffic/
+
+Exit:
+- Monero → prepaid virtual card → Buy online → sell it and get cash
+- Monero → Sol → Use Solcard on Payment → sell it and get cash
+- Monero → eGift → buy → sell it and get cash 
+- 
+
 
 
 ## Done
@@ -36,7 +72,7 @@ order: 4
 - [x] P2PプラットフォームBisqの導入: [Install Bisq on Kali Linux \| Prescription](https://prescription1337.github.io/posts/P2P-Bisq/)
 - [x] Bitcoin KnotsによるBitcoin Full Node 導入: [Run Bitcoin Full Node with Bitcoin Knots \| Prescription](https://prescription1337.github.io/posts/Bitcoin-Full-Node/)
 - [x] Monero Full Node 導入: [Run Monero Full Node \| Prescription](https://prescription1337.github.io/posts/Monero-Full-Node/)
-- [ ] BTC追跡: IPとWalletとBTC
+- [x] AndroidスマホにGrapheneOSの導入: ([Install GrapheneOS on a Pixel 7a \| Prescription](https://prescription1337.github.io/posts/GrapheneOS/))
 
 
 
