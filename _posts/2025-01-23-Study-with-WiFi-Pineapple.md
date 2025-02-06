@@ -32,12 +32,59 @@ tags: [Hak5, WiFi-Pineapple, Study With, DNS Spoofing]
 
 ### 実践
 
-1. Recon: ターゲット確認
-- ![alt text](../assets/images/Screenshot_2025-02-06_151547.png)
-2. Deauth: クライアントの強制切断を確認
-- ![alt text](../assets/images/Screenshot_2025-02-06_154447.png)
-- クライアント(このWiFiに接続してるAndroidスマホの情報は見えない)
-3. Handshake Capture（ハンドシェイクキャプチャ）
+1. **Recon: ターゲット確認**  
+   ![alt text](../assets/images/Screenshot_2025-02-06_151547.png)
+
+2. **Deauth: クライアントの強制切断を確認**  
+   ![alt text](../assets/images/Screenshot_2025-02-06_154447.png)  
+   - クライアント（このWiFiに接続しているAndroidスマホ）の情報は見えない  
+
+3. **Handshake Capture（ハンドシェイクキャプチャ）: tcpdumpモジュールを使用**  
+   
+   #### 3.1 インターフェースをモニターモードに変更  
+   - WiFi PineappleにSSHで接続:  
+     ```sh
+     ssh root@172.16.42.1
+     ```
+   - モニターモード（Monitor Mode）を有効化:  
+     ```sh
+     airmon-ng start wlan1
+     ```
+     ![alt text](../assets/images/Screenshot_2025-02-06_170338.png)  
+     - `wlan1` に対してモニターモードの仮想インターフェース `wlan1mon` が作成されていることが分かる。
+   - MMとして利用できるインターフェースを特定:  
+     ```sh
+     iwconfig
+     ```
+     ![alt text](../assets/images/Screenshot_2025-02-06_165352.png)  
+     - `wlan2` はクライアントモード（Managed Mode）で利用中：WiFi Pineappleが「WiFiルーターに接続する側」として動作する  
+     - `wlan0-1` はアクセスポイントモード（AP Mode / Master Mode）で利用中：他のデバイスを接続させるための偽WiFi（Evil Twin Attack など）を作るときに使う  
+
+   #### 3.2 tcpdumpモジュールをインストール  
+   - `Modules` >> `install`
+   - `Modules` >> `tcpdump` >> `install dependencies`
+
+   #### 3.3 実際にキャプチャ  
+   - Recon: ターゲットの情報を取得
+     ![alt text](../assets/images/Screenshot_2025-02-06_172042.png)
+   - wlan1mon をターゲットAPのチャネルに固定:
+     ```sh
+     iwconfig wlan1mon channel 11
+     ```
+   - `tcpdump` を使用してパケットをキャプチャ: -w は保存先でもしusbに保存したい場合: `tcpdump -i wlan1mon -w /sd/handshake.pcap` 
+     ```sh
+     tcpdump -i wlan1mon -w /root/handshake.pcap
+     ```
+   - UIでDeauth実行: コマンドで実行する場合: `aireplay-ng --deauth 10 -a <ターゲットAPのMACアドレス> wlan1mon`
+   - Cnrl + C でパケットキャプチャを停止。
+     ![alt text](../assets/images/Screenshot_2025-02-06_172921.png)
+   - 取得したデータをLaptopに転送: `scp root@172.16.42.1:/root/handshake.pcap C:\Users\<YourUsername>\Desktop\`
+4. Password Cracking（パスワードクラック） → 辞書攻撃・総当たり攻撃でパスワード解析
+   - Wiresharkでデータを開いてキャプチャをフィルタリングして WPA ハンドシェイクパケットを探す: `eapol`でフィルター
+     ![alt text](../assets/images/Screenshot_2025-02-06_175138.png)
+   - WPA2ハンドシェイクで、パスワードを解析するために必要なデータ。File → Save As → test.cap として保存
+   - 
+
 
 
 
