@@ -30,7 +30,8 @@ order: 4
 - [ ] 段階の考え方：Get Crypt → Cash Out シンプルに。その中で幾つかの候補を考えていく。
 - https://stealthex.io/buy-pairs/us-dollar-to-monero/
 - get BTC and Monbero on P2P ()
-- 
+- [ ] Noones事案まとめ
+- [ ] Wifi-Pineappleで学ぶネットワーク
 
 ## Links
 SIM/eSIM

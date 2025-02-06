@@ -20,14 +20,21 @@ tags: [Hak5, WiFi-Pineapple]
 
 所感：
 - かなり簡単にクローンの作成が出来た。
-- 18000円 → 5300円 なのでコスパが良い。
+- 18000円 → 10117円 なのでコスパが良い。
 
 課題：
 - WiFi Pineappleで出来ることを実践の中で把握していく。
 
-Source
-- [Build a $23 Wi-Fi Pineapple in 6 Minutes — EASIEST Method! - YouTube](https://www.youtube.com/watch?v=udnxagkSzoA)
-- [github wifi-pineapple-cloner](https://github.com/xchwarze/wifi-pineapple-cloner)
+諸経費:  
+
+| 品名              | 値段 | 到着まで | 備考                             |  
+|------------------|--------|----------------|----------------------------------|  
+| RT5572 (x2)         | 4947   | 11日         | No 5GHz channels 52–136 though |  
+| GL-MT300N V2    | 3855   | 7日            |                                  |  
+| USB Hub         | 474    | 0日            |                                  |  
+| USBメモリ (16GB) | 841    | 0日            | 16GB                             |  
+| **合計**        | **10,117** | -              |                                  |  
+
 
 ## 作成方法
 - ステップ
@@ -69,3 +76,65 @@ Source
           - ![alt text](../assets/images/Screenshot_2025-01-23_155512.png)
       - Reconなどで試してみる。
           - ![alt text](../assets/images/Screenshot_2025-01-23_155618.png)
+
+## Upgrade
+
+- wifiアダプターのチップセットの確認 (2つ)：
+  - Advanced >> USB & Storage: RT5572
+    - ![alt text](../assets/images/Screenshot_2025-02-06_095438.png)
+  - Networking >> airmon-ng
+    - ![alt text](../assets/images/Screenshot_2025-02-06_101411.png)
+- Setup (factory reset)
+  - wifi adapter x2, usb hub, usb flash memory を装着
+  - Configuration >> Factory Reset Pineapple
+  - 全てのライトが点滅するまで待機 → dashboardでpopupが出たら進む → resetボタンを一度押す → Device Configurationを入力(動画を参照) → ログイン
+- Internet & Missing Packages
+  - Reconでlive scanが出来ない(Start → Stop → Loadが煩雑)
+  - Live Reconするにはインターネットへのアクセスが必要なので接続する。
+    - Networking → wlan2 → 自分のホームwifiで接続: 接続確認がGUI上で出来ない（バグ）
+    - `ssh root@Pineapple`で接続しネットに接続しているか確かめる: `ping google.com`
+      - ![alt text](../assets/images/Screenshot_2025-02-06_105117.png)
+    - Dashboard でNewsのロードも出来るはず。
+  - 接続を確認したらMissing Packagesをインストール
+    - usbドライブをフラッシュ: `wpc-tools format_sd`
+    - フラッシュドライブのディレクトリへ: `cd /sd/`
+    - サブディレクトリを全て削除: `rm -r *`
+    - 1つ前のディレクトリに戻る: `cd ../`
+    - Missing Packagesをインストール: `wpc-tools missing_packages`
+  - Live Reconの確認: 成功
+  - Scan Location の場所(スキャンの結果をusbに保存出来るように)を変更: `/sd/`
+- Moduleをインストールしてさらにアップグレード（インストール方法を確認するのみ。）
+  - Modules >> Get Modules でモジュールリストを取得(各モジュールの利用方法など:  [Study with WiFi Pineapple \| Prescription](https://prescription1337.github.io/posts/Study-with-WiFi-Pineapple/))
+  - Deauthをインストール：install >> SD Card(USB)を指定。Module >> Deauth >> DependenciesをSD Card(USB)へインストール。
+    - ![alt text](../assets/images/Screenshot_2025-02-06_113706.png)
+  - Evil Portalをインストール：同じ要領
+  - 確認
+    - ![alt text](../assets/images/Screenshot_2025-02-06_114224.png)
+- The OUI(Organizationally Unique Identifier) Database
+  - Networking >> OUI Lookup >> Download 
+  - MAC Addressの前半がOUIであり、デバイスの製造元を表している
+  - ![alt text](../assets/images/Screenshot_2025-02-06_115316.png)
+  - 実践：Recon >> OUIを確認
+- Custom Reset Button Actions: Configuration >> Button Script
+  - Resetボタンを押した時のScriptで変更可能。
+- Wireless Management via the Management AP
+  - 器機の設定が終わったら有線接続から無線に変更しておく。
+  - 最初のセットアップが完了したら、PCやスマホを Pineapple_Management にWi-Fi接続することで、今後はLAN接続なしでweb uiから管理できるようになる。
+  - WiFi Pineapple は Management AP（管理用Wi-Fi） を作成しており、PCやスマホが このSSID（Pineapple_Management）に接続すると、Pineapple に直接アクセスできるネットワークが構成される。
+  - 通常のLAN接続時（初回セットアップ時）
+    - PC から USB-C Ethernet で Pineapple に接続
+    - http://172.16.42.1:1471 で Web UI にアクセス
+    - Wi-Fi（Pineapple_Management）経由の管理
+  - PCやスマホを Pineapple_Management にWi-Fi接続
+    - http://172.16.42.1:1471 で Web UI にアクセス
+    - LAN接続なしでも、WiFi Pineapple を操作できる
+  - ポイント: Pineapple_Management は 通常のWi-Fiルーターのように「インターネット」に接続しているわけではない ため、「No Internet, Secured」 と表示されるが、Pineapple の Web UI にはアクセス可能。
+
+## 実験
+
+-  [Study with WiFi Pineapple \| Prescription](https://prescription1337.github.io/posts/Study-with-WiFi-Pineapple/)
+
+## 参照: 
+- [Build a $23 Wi-Fi Pineapple in 6 Minutes — EASIEST Method! - YouTube](https://www.youtube.com/watch?v=udnxagkSzoA)
+- [Upgrading the $23 Wi-Fi Pineapple for Maximum Hackability! - YouTube](https://www.youtube.com/watch?v=pHtpso21P0o)
+- [github wifi-pineapple-cloner](https://github.com/xchwarze/wifi-pineapple-cloner)
