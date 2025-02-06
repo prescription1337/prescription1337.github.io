@@ -9,6 +9,38 @@ tags: [Hak5, WiFi-Pineapple, Study With, DNS Spoofing]
 
 - ツールを活用しながら学んでいく。
 
+## 準備
+
+- ポケットWiFi(中古)を工場出荷時に戻す
+  - ![alt text](../assets/images/Screenshot_2025-02-06_143218.png)
+- SSID / PWを再設定
+
+## 機器
+
+- ターゲット: PoketWiFi(SSID:1337_WiFI)
+- 接続デバイス: Android スマホ
+- Laptop: WifiPineappleとの接続とWebUI操作
+- WifiPineapple
+
+## WPA/WPA2 Crack
+
+### ステップ
+1. Recon（ネットワークスキャン） → WiFiの情報収集
+2. Deauthentication Attack（Deauth攻撃） → クライアントを強制切断してハンドシェイクを取得
+3. Handshake Capture（ハンドシェイクキャプチャ） → WPA/WPA2の認証データを取得
+4. Password Cracking（パスワードクラック） → 辞書攻撃・総当たり攻撃でパスワード解析
+
+### 実践
+
+1. Recon: ターゲット確認
+- ![alt text](../assets/images/Screenshot_2025-02-06_151547.png)
+2. Deauth: クライアントの強制切断を確認
+- ![alt text](../assets/images/Screenshot_2025-02-06_154447.png)
+- クライアント(このWiFiに接続してるAndroidスマホの情報は見えない)
+3. Handshake Capture（ハンドシェイクキャプチャ）
+
+
+
 ## DNS Spoofing
 
 概要：
