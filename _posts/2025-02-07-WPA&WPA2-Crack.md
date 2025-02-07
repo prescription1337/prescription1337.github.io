@@ -1,7 +1,7 @@
 ---
 title: "WPA/WPA2 Crack with WiFi Pineapple"
 date: "2025-02-07 00:00:00 +0900"
-categories: [Hacking], WiFi]
+categories: [Hacking, WiFi]
 tags: [Hak5, WiFi-Pineapple, WPA, WPA2, WiFi Hacking]
 ---
 
