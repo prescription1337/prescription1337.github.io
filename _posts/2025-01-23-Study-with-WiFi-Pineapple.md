@@ -107,9 +107,17 @@ tags: [Hak5, WiFi-Pineapple, Study With, DNS Spoofing]
 - キャプチャファイルの移動(PS上): `scp root@172.16.42.1:/sd/practice.pcap C:\Users\ebisu\Desktop\`
 - Wireshrkで`eapol`を確認し保存: Message 1 of 4 - Message 4 of 4 全て含まれていたら成功。
 - Hashcatでクラック
-   - .pcap ファイル ⇢ .hccapxファイルへ: `hcxpcapngtool -o handshake.hccapx capture.pcap`
-   - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt`
-   - 
+  - .pcap ファイル ⇢ .hccapxファイルへ: `hcxpcapngtool -o handshake.hccapx capture.pcap`
+  - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt`
+  - 失敗:![alt text](../assets/images/2025-02-07_22-10.png)
+- 他のパスワードリストを利用する
+  - [WPA-Dictionary](https://github.com/TKanX/WPA-Dictionary)
+  - フォルダに数多くの.txtファイルがあったので１つにまとめる: `cat /media/.../WPA-password-dictionary/*.txt > /media/.../WPA-password-dictionary/merged_wordlist.txt`
+  - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 practice7.hccapx /media/.../WPA-password-dictionary/merged_wordlist.txt`
+  - 成功: ![alt text](../assets/images/2025-02-08_07-28.png)
+  
+
+
 
 ## DNS Spoofing
 
