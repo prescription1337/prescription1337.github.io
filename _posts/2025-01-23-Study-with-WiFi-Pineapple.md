@@ -83,9 +83,10 @@ tags: [Hak5, WiFi-Pineapple, Study With, DNS Spoofing]
    - Wiresharkでデータを開いてキャプチャをフィルタリングして WPA ハンドシェイクパケットを探す: `eapol`でフィルター
      ![alt text](../assets/images/Screenshot_2025-02-06_175138.png)
    - WPA2ハンドシェイクで、パスワードを解析するために必要なデータ。File → Save As → test.cap として保存
-   - 
-
-
+   - Hashcatを利用: 3min
+   - .pcap ファイル ⇢ .hccapxファイルへ: `hcxpcapngtool -o handshake.hccapx capture.pcap`
+   - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt`
+   - ![alt text](../assets/images/2025-02-07_16-49.png)
 
 
 ## DNS Spoofing
