@@ -5,141 +5,103 @@ categories: [Hacking, WiFi]
 tags: [Hak5, WiFi-Pineapple, WPA, WPA2, WiFi Hacking]
 ---
 
-# Make Most of WiFi Pineapple
+# Evil Twin Attack
 
-- ツールを活用しながら学んでいく。
+所感: 
+- WiFi Pineappleの仕様でアダプターが認識されなかったり、Access Point(AP)が表示されなかったりで少し時間がかかった。
+- 公共のフリーWiFiに模したAPを作成して、認証情報を奪取するのは容易。
 
-## 準備
+結果: 
+- **成功**
 
-- ポケットWiFi(中古)を工場出荷時に戻す
-  - ![alt text](../assets/images/Screenshot_2025-02-06_143218.png)
-- SSID / PWを再設定
+課題: 
+- ダウンロードしたカスタムポータルは英語なので、日本で利用するには自分でログインページを作成する必要がある。
 
-## 機器
+## Evil Twin Attackとは
 
-- ターゲット: PoketWiFi(SSID:1337_WiFI)
-- ターゲットに接続しているデバイス: Android スマホ
-- Laptop: WifiPineappleとの接続とWebUI操作
-- WifiPineapple
+- **概要:** 正規のWiFiと同じSSIDの偽WiFiを作成し、ターゲットを接続させる。
+- **目的・用途:** 認証情報の窃取、MITM攻撃。
+- **使用モジュール / ツール:** Evil Portal, Occupineapple。
 
-## WPA/WPA2 Crack
+## 実行環境
 
-### ステップ
-1. Recon（ネットワークスキャン） → WiFiの情報収集
-2. Deauthentication Attack（Deauth攻撃） → クライアントを強制切断してハンドシェイクを取得
-3. Handshake Capture（ハンドシェイクキャプチャ） → WPA/WPA2の認証データを取得
-4. Password Cracking（パスワードクラック） → 辞書攻撃・総当たり攻撃でパスワード解析
+- **ターゲット:** PoketWiFi (SSID: 1337_WiFi)
+- **ターゲットに接続しているデバイス:** Android スマホ
+- **Laptop (Windows):** WiFi Pineappleとの接続とWebUI操作
+- **Laptop (Kali):** PW Crack用
+- **WiFi Pineapple**
 
-### 実践_01
+## ステップ
+1. ターゲットWiFiの情報収集 → **Recon モジュール**
+2. 偽のWiFi（Evil Twin）を作成 → **Networking モジュール**
+3. ターゲットを Deauth 攻撃で切断 (公共WiFi利用の場合はスキップ) → **Deauth モジュール**
+4. 偽のログインページを表示 & クライアントが入力した認証情報を取得 → **Evil Portal モジュール**
 
-1. **Recon: ターゲット確認**  
-   ![alt text](../assets/images/Screenshot_2025-02-06_151547.png)
+## 実践_01: 公共のオープンなFree WiFiを想定
 
-2. **Deauth: クライアントの強制切断を確認**  
-   ![alt text](../assets/images/Screenshot_2025-02-06_154447.png)  
-   - クライアント（このWiFiに接続しているAndroidスマホ）の情報は見えない  
+### 1. ターゲットWiFiの情報収集
 
-3. **Handshake Capture（ハンドシェイクキャプチャ）: tcpdumpモジュールを使用**  
-   
-   #### 3.1 インターフェースをモニターモードに変更  
-   - WiFi PineappleにSSHで接続:  
-     ```sh
-     ssh root@172.16.42.1
-     ```
-   - モニターモード（Monitor Mode）を有効化:  
-     ```sh
-     airmon-ng start wlan1
-     ```
-     ![alt text](../assets/images/Screenshot_2025-02-06_170338.png)  
-     - `wlan1` に対してモニターモードの仮想インターフェース `wlan1mon` が作成されていることが分かる。
-   - MMとして利用できるインターフェースを特定:  
-     ```sh
-     iwconfig
-     ```
-     ![alt text](../assets/images/Screenshot_2025-02-06_165352.png)  
-     - `wlan2` はクライアントモード（Managed Mode）で利用中：WiFi Pineappleが「WiFiルーターに接続する側」として動作する  
-     - `wlan0-1` はアクセスポイントモード（AP Mode / Master Mode）で利用中：他のデバイスを接続させるための偽WiFi（Evil Twin Attack など）を作るときに使う  
+- WiFi Pineapple の Web インターフェース にアクセス（172.16.42.1:1471）。
+- **Recon:** スキャンを実行 し、ターゲットの WiFi 情報を取得。
+   - **SSID（ネットワーク名）:** 1337_WiFi
+   - **BSSID（MACアドレス）:** C0:5B:12:1E:88:DF
+   - **チャンネル:** 6
+      ![alt text](../assets/images/Screenshot_2025-02-08_085010.png)  
 
-   #### 3.2 tcpdumpモジュールをインストール  
-   - `Modules` >> `install`
-   - `Modules` >> `tcpdump` >> `install dependencies`
+### 2. 偽のWiFi（Evil Twin）を作成
 
-   #### 3.3 実際にキャプチャ  
-   - Recon: ターゲットの情報を取得
-     ![alt text](../assets/images/Screenshot_2025-02-06_172042.png)
-   - wlan1mon をターゲットAPのチャネルに固定:
-     ```sh
-     iwconfig wlan1mon channel 11
-     ```
-   - `tcpdump` を使用してパケットをキャプチャ: -w は保存先でもしusbに保存したい場合: `tcpdump -i wlan1mon -w /sd/handshake.pcap` 
-     ```sh
-     tcpdump -i wlan1mon -w /root/handshake.pcap
-     ```
-   - UIでDeauth実行: コマンドで実行する場合: `aireplay-ng --deauth 10 -a <ターゲットAPのMACアドレス> wlan1mon`
-   - Cnrl + C でパケットキャプチャを停止。
-     ![alt text](../assets/images/Screenshot_2025-02-06_172921.png)
-   - 取得したデータをLaptopに転送: `scp root@172.16.42.1:/root/handshake.pcap C:\Users\<YourUsername>\Desktop\`
-4. Password Cracking（パスワードクラック） → 辞書攻撃・総当たり攻撃でパスワード解析
-   - Wiresharkでデータを開いてキャプチャをフィルタリングして WPA ハンドシェイクパケットを探す: `eapol`でフィルター
-     ![alt text](../assets/images/Screenshot_2025-02-06_175138.png)
-   - WPA2ハンドシェイクで、パスワードを解析するために必要なデータ。File → Save As → test.cap として保存
-   - Hashcatを利用: 3min
-   - .pcap ファイル ⇢ .hccapxファイルへ: `hcxpcapngtool -o handshake.hccapx capture.pcap`
-   - パスワードクラック: `hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt`
-   - ![alt text](../assets/images/2025-02-07_16-49.png)
+- **現在のネットワーク設定:**
+   - **wlan1:** Mode: Managed
+   - **wlan0-1:** Mode: Master
+   - **wlan2:** Mode Managed (ESSID: "接続先のWiFi SSID") → これは UI Networking → WiFi Client Mode で接続済。
+- **SSID をターゲットと同じにする**（例：Free WiFi → Free WiFi）。
+- **チャンネルを合わせる**（ターゲットAPと同じチャンネルに設定）。
+   - **ターゲットがPW付きのWiFiなら** Management SSID を変更: Disable Open SSID チェック
+   - **ターゲットがPW無しの公共WiFiなら** Open SSID を変更: Disable Management AP をチェック。
+      ![alt text](../assets/images/Screenshot_2025-02-08_101658.png)  
 
-### 実践_02
-※ wlan2が認識されないバグがあるため、アダプターを何度か抜いたりして認識させる: `iwconfig`
+### 3. ターゲットを Deauth 攻撃で切断: スキップ
 
-1. **Recon on WiFi Pineapple**  
-   ![alt text](../assets/images/Screenshot_2025-02-07_215242.png)
+- **Deauth モジュール を開く。**
+- ターゲットWiFiを選択（BSSIDを指定）。
+- ターゲットのクライアントを選択（MACアドレスを指定）。
+- Deauth 攻撃を開始。
 
-2. **ターゲットの選定:**  
-   - WPA2 PSK (CCMP) や WPA Mixed PSK (CCMP) を利用している。
-   - 電波強度が -60dBm 前後のものを選択。
-   - クライアント（接続デバイス）がいることを確認。
+### 4. 偽のログインページを表示
 
-3. **モニターモード有効化とネットワーク監視:**  
-   ```sh
-   airmon-ng start wlan1
-   airodump-ng --bssid XX:XX:XX:XX:XX:XX -c 7 -w /sd/handshake wlan1mon
-   ```
-   ![alt text](../assets/images/Screenshot_2025-02-07_214904.png)
+- **Evil Portal モジュール を開く。**
+- **Basic を試す**
+   - **Work Bench → Basic → Create New Portal**
+   - **Controls → Captive Portal → Start**
+   - **Activate**
+   - スマホで設定した偽のWiFiをタップ。
+   - **「WiFiネットワークにログインしてください」の通知が出る → Basicのデフォルトログイン画面が表示される。**
+   - **Authorize を押すとWiFiに接続。**
+   - **Modules → ConnectedClients で確認。**
+      ![alt text](../assets/images/Screenshot_2025-02-08_114414.png)
+      ![alt text](../assets/images/Screenshot_2025-02-08_121223.png)
 
-4. **キャプチャ:**  
-   ```sh
-   tcpdump -i wlan1mon -w /sd/practice7.pcap
-   ```
 
-5. **Deauth攻撃:**  
-   ```sh
-   aireplay-ng --deauth 1 -a XX:XX:XX:XX:XX:XX -c YY:YY:YY:YY:YY:YY wlan1mon
-   ```
-  - YY: Frameが多い方のデバイスを選択。通信が多いので、キャプチャできるチャンスが増える。
-  - 何度も間隔を開けて行う。Message 1 of 4 - Message 4 of 4 までのハンドシェイクのキャプチャを取得しないといけないため。
-  - 4つ全て取得できるまで何度も。確認はwireshrk。
+- **カスタムログインページ を試す**
+   - ダウンロード: [kleo/evilportals - Github](https://github.com/kleo/evilportals)
+   - Googleログインページをテストするので、フォルダを移動: `scp -r C:/projects/wifi-pineapple/evilportals-master/evilportals-master/portals/google-login root@172.16.42.1:/sd/portals/google-login/`
+   - うまくいかない場合は [WinSCP](https://winscp.net/eng/download.php) を使用。
+   - 成功:
+      ![alt text](<../assets/images/Screenshot_2025-02-08 _143913.png>)
+      ![alt text](../assets/images/Screenshot_2025-02-08_143940.png)
+   - Modules >> Evil Portal >> Google Login Activated >> Start。
+   - スマホとPCがWiFi接続時に認証情報を取得することに成功。
+      ![alt text](../assets/images/Screenshot_2025-02-08_152643.png)
+      ![alt text](../assets/images/Screenshot_2025-02-08_153029.png)
 
-6. **キャプチャファイルの移動:**  
-   ```sh
-   scp root@172.16.42.1:/sd/practice.pcap C:\Users\ebisu\Desktop\
-   ```
+### **トラブルシューティング**
 
-7. **Wiresharkで `eapol` を確認し保存** 
-   Message 1 of 4 - Message 4 of 4 全て含まれていたら成功。
+- **スマホやPCでポータルが出ずにログインされる場合:**
+  - WiFi PineappleのDHCP Leasesを削除: `rm /tmp/dhcp.leases`
+  - スマホ: 「設定」→「システム」→「リセット」→「Wi-Fi、モバイル、Bluetoothをリセット」
+  - それでも上手く行かないときは、WiFi Pineapple 再起動。
 
-8. **Hashcatでパスワードクラック:**: 失敗  
-   ```sh
-   hcxpcapngtool -o handshake.hccapx practice7.pcap #.pcap ファイル ⇢ .hccapxファイルへ
-   hashcat -m 22000 -a 0 -w 3 handshake.hccapx /usr/share/wordlists/rockyou.txt
-   ```
-   ![alt text](../assets/images/2025-02-07_22-10.png)
-
-9. **別のパスワードリストを使用:**: 成功  
-   別のWiFI用のPWリストを取得: [WPA-Dictionary](https://github.com/TKanX/WPA-Dictionary)
-
-   ```sh
-   cat /media/.../WPA-password-dictionary/*.txt > /media/.../WPA-password-dictionary/merged_wordlist.txt #フォルダに数多くの.txtファイルがあったので１つにまとめる
-   hashcat -m 22000 -a 0 -w 3 practice7.hccapx /media/.../WPA-password-dictionary/merged_wordlist.txt
-   ```
-   ![alt text](../assets/images/2025-02-08_07-28.png)
+参照: 
+- [Evil Portal Module - Wi-Fi Pineapple Mark VII](https://www.youtube.com/watch?v=EEJtdj8i4Jg)
+- [kleo/evilportals - Github](https://github.com/kleo/evilportals)
 
