@@ -129,7 +129,7 @@ tags: [Hak5, WiFi-Pineapple, WPA, WPA2, WiFi Hacking]
 ### 2. ターゲットデバイスの選定
 - モニターモード有効化とネットワーク監視
    ```sh
-   airmon-ng start wlan1
+   airmon-ng start wlan1 #モニターモードへ
    airodump-ng --bssid GG:RR:AA:YY:XX:XX -c 11 -w /sd/handshake wlan1mon
    ```
    ![alt text](../assets/images/Screenshot_2025-02-08_213443.png)
