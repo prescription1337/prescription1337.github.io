@@ -177,3 +177,23 @@ aireplay-ng --deauth 100 -a C0:5B:12:1E:88:DF -c 12:D1:5F:69:41:FC wlan1mon
    - HTTPリクエスト: GET / や POST / のパケットをチェック
    - クッキー情報: Set-Cookie ヘッダーを探す
    - 認証情報: username=xxxxx&password=xxxxx のようなデータ
+
+- ターゲットデバイスで実行した動作
+   - 楽天ラクマ(アプリ)へのログイン
+   - Aliexpressへのログイン
+   - Google Chromeでの検索
+
+#### 7.1 楽天ラクマ(アプリ)のパケット分析
+
+- 表示フィルター: `dns.qry.name contains "rakuten"`
+  - 概要:「DNSクエリ名に 'rakuten' を含むパケット」 だけを表示
+  - 理由: 
+    - ラクマのアプリやウェブサイトにアクセスすると、必ず ラクマ関連のドメインのDNSクエリ が発生。
+    - `rakuma.jp' のIPアドレスを教えて! → DNSサーバー`
+    - 「いつ」「どのデバイスが」「ラクマのどのサーバーと通信しようとしたか」 を特定できる
+    - ラクマに関係する通信の「痕跡」を見つける
+    ![alt text](../assets/images/Screenshot_2025-02-10_120740.png)
+- 表示フィルター：`tls.handshake.type == 1`
+  - 実際のログインリクエスト（HTTP POSTリクエスト） をキャプチャする必要がある
+  - パケットには SNI（Server Name Indication） という情報が含まれており、これは 「このTLS通信はどのホスト（ドメイン）向けのものか？」 を示す。
+  - 対象のデバイスがどのアプリやサービスを使用しているかが分かる
