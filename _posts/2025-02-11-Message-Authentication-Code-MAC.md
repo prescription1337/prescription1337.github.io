@@ -1,6 +1,6 @@
 ---
 title: "Message Authentication Code (MAC)"
-date: "2025-02-10 00:00:00 +0900"
+date: "2025-02-11 00:00:00 +0900"
 categories: [Knowledge, Encryption]
 tags: [Digital Signaturte, CA]
 ---
@@ -18,6 +18,7 @@ tags: [Digital Signaturte, CA]
 　　- データの完全性とメッセージ認証を同時に検証できる。
 - HMACの仕組み：
   - お互いが共通して持っている`秘密鍵`と`メッセージ`を`ハッシュ関数`に渡して`MAC値`を生成
+  - 共通鍵暗号方式
 - 流れ：
   - `MAC値`と`メッセージ`を相手に送る
   - ![alt text](../assets/images/Screenshot_2025-02-11_1.png)
