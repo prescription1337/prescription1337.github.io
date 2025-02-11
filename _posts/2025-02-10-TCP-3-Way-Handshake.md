@@ -10,6 +10,7 @@ tags: [TCP, 3-Way Handshake, Network]
 - データを送受信する前に、3回のパケットをやり取りして コネクションを確立し、仮想回線を作ること。
 - このプロセスにより、信頼性のある通信の準備が整う。
 - ![alt text](../assets/images/Screenshot_2025-02-10_1207401.jpg)
+- ![alt text](../assets/images/Screenshot_2025-02-11_120615.png)
 
 ## TCPを使用している主なプロトコル
 
