@@ -37,6 +37,8 @@ tags: [TCP, 3-Way Handshake, Network]
 
 ## 参照
 
+- [TCP/IP階層モデル](https://www.youtube.com/watch?v=BzEOXMZmru8)
+- [パケットの中身を見てTCP/IPを絶対に理解したい](https://www.youtube.com/watch?v=fmN3xrqEz_0&t=1s)
 - [【#18 CCNA 】【2章TCP/IP】スリーウェイハンドシェイク](https://www.youtube.com/watch?v=qj1HPyIFW8E)
 - [TCP three-way handshaking](https://www.infraexpert.com/study/tcpip9.html)
 - [TCPの制御（スリーウェイハンドシェイク）](https://net-skills.net/intro-menu1/three-way-handshake/)
