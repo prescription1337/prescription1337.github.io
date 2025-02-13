@@ -11,6 +11,7 @@ order: 4
 ## Waiting
 
 - [ ] KYC無しでクレジットカードで仮想通過の購入
+- [ ] WarDrivingテスト: NetHunter pro + ALFA AWU036AC
 - [ ] 有料記事のためのプラットフォームの選定/作成
 - [ ] 完全匿名のWebsiteと決済の実装
 - [ ] AndroidスマホにGrapheneOSの導入
