@@ -63,6 +63,7 @@ tags: [TLS Handshake, Network]
 - 詳しい説明: 
   - [デジタル証明書の仕組み(PKI)](https://prescription1337.github.io/posts/Digital-Signature/)
   - 上記の5. デジタル証明書の仕組み(PKI)の流れ6を参照。
+  - 証明書の検証（ハッシュ値の比較）はSSL/TSL Handshake `Server Hello Doneの後`
 
 - **Certificate Request（サーバー → クライアント）【スキップされることが多い】**
   - 多くの場合、クライアントが本物かどうかの認証は行われない。
@@ -126,6 +127,8 @@ tags: [TLS Handshake, Network]
 ---
 
 ##### **4. まとめ**
+
+
 | **アルゴリズム** | **役割** | **タイミング** |
 |---------------|----------------|----------------------|
 | **RSA (TLS_RSA)** | 鍵交換（プレマスターシークレットのやり取り） | `ClientKeyExchange` |
@@ -136,8 +139,6 @@ TLS_RSA_WITH_AES_256_GCM_SHA384 は、**RSAで鍵交換 → SHA384で鍵導出 �
 
 - 理解
 - `TLS_RSA`の表記があるなら、CAに届けでたときに、公開鍵はRSAで鍵ペアを作成してたということ。
-- 
-
 
 ---
 
