@@ -157,7 +157,8 @@ tags: [Digital Signaturte, CA]
 
 - [デジタル署名と電子認証とは](https://www.youtube.com/watch?v=S5jJJAGC5vs)
 - [デジタル証明書 - 概要](https://www.youtube.com/watch?v=O1T2-rziJ_c) 
-- [デジタル署名](https://www.youtube.com/watch?v=soTzEzqkk5Y):
+- [デジタル署名_01](https://www.youtube.com/watch?v=soTzEzqkk5Y):
+- [デジタル署名_02](https://www.youtube.com/watch?v=CNEDYBSxjM8): 
 - [デジタル証明書](https://www.youtube.com/watch?v=iwbGqXWA_ys):
 - [サーバ証明書の種類](https://www.youtube.com/watch?v=e83ck35lYis):
 - [PKIの仕組み](https://www.youtube.com/watch?v=KOp90QN2QZY):
