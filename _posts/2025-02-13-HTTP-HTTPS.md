@@ -78,14 +78,26 @@ tags: [TLS Handshake, Network, HTTPS, HTTP, SSL/TLS, TCP]
 
 1. **リクエストの整合性チェック用（HMAC）**
    - クライアントは、暗号化前の `HTTP リクエストデータ` を `Client MAC Key` を使って `HMAC` を計算
-   - `MAC = HMAC-SHA256(Client MAC Key, HTTPリクエストデータ)`
-   - `Client MAC Key` は`TLS handshake`の `6. Key Generation`で得た鍵
+   - `MAC = HMAC-SHA256(Client MAC Key, HTTPリクエストデータ)` 
+   - `mac = hmac.new(client_mac_key, request_data, hashlib.sha256).digest()`
+     - `Client MAC Key` → 共有されている鍵（サーバーとクライアントだけが知っている）
+     - `HTTPリクエストデータ` → 送信するリクエストの内容
+     - `SHA-256` → ハッシュ関数
+     - `HMAC（鍵付きハッシュ関数）` → MAC（メッセージ認証コード） という値が得られる
+   - 詳細
+     - ![alt text](../assets/images/Screenshot_2025-02-14_102138.png)
    
 2. **リクエストの暗号化**
-   - `HTTPリクエストデータ` + `HMAC` を `Client Encryption Key` で暗号化する。
+   - `HTTPリクエストデータ` + `MAC値` を `Client Encryption Key` で暗号化する。
    - `Ciphertext = AES-256-GCM-Encrypt(Client Encryption Key, HTTPリクエスト + MAC, Client IV)`
      - AES-GCM などの AEAD（Authenticated Encryption with Associated Data）を使う場合、MAC を追加しなくても、暗号化時に GCM タグが生成されるため、HMAC は不要になることもある。
      - しかし、AES-CBC のような AEAD でない暗号方式の場合は、HMAC が必要 となる。
+   - 詳細:
+     - ![alt text](../assets/images/Screenshot_2025-02-14_103235.png)
+     - ![alt text](../assets/images/Screenshot_2025-02-14_103245.png)
+     - ![alt text](../assets/images/Screenshot_2025-02-14_103252.png)
+     - ![alt text](../assets/images/Screenshot_2025-02-14_103301.png)
+
 
 3. **サーバーが復号 & 整合性チェック**
 
