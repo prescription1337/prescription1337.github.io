@@ -88,12 +88,25 @@ tags: [TLS Handshake, Network, HTTPS, HTTP, SSL/TLS, TCP]
      - しかし、AES-CBC のような AEAD でない暗号方式の場合は、HMAC が必要 となる。
 
 3. **サーバーが復号 & 整合性チェック**
-   - サーバーがリクエストを受信後
-     - 復号: `Plaintext = AES-256-GCM-Decrypt(Client Encryption Key, Ciphertext, Client IV)`
-       - ここで取得できるのは「HTTPリクエストデータ + MAC」
-     - HMAC を再計算し、改ざんチェック: `Verify MAC = HMAC-SHA256(Client MAC Key, HTTPリクエストデータ)`
-       - 受信した MAC 値とサーバー側で計算した MAC 値が一致すれば改ざんなし！
-       - 一致しなければ、改ざんされた可能性があるためリクエストを拒否する。
+
+   1. **クライアントからのリクエスト受信**
+      - クライアントは `Client Encryption Key` を使って `AES-256-GCM` で暗号化し、リクエストを送信。
+      - サーバーは暗号化された `Ciphertext` と `Client IV` を受信する。
+
+   2. **復号処理**
+      - サーバーは **クライアントと共有している `Client Encryption Key`** を使用して `AES-256-GCM` で復号。  
+      - `Plaintext = AES-256-GCM-Decrypt(Client Encryption Key, Ciphertext, Client IV)`  
+      - ここで得られる `Plaintext` には、  
+      **「HTTPリクエストデータ + MAC（認証タグ）」** が含まれている。
+
+   3. **整合性チェック**
+      - `HTTPリクエストデータ` を取り出し、サーバー側でも HMAC を計算。  
+      - `Verify MAC = HMAC-SHA256(Client MAC Key, HTTPリクエストデータ)`
+      - 受信した MAC とサーバーで計算した MAC を比較し、一致すれば改ざんなし。
+
+   4. **検証結果に応じた処理**
+      - **一致する場合:** 正常なリクエストとして処理を続行。  
+      - **一致しない場合:** 改ざんの可能性があるためリクエストを拒否。
 
 ---
 
@@ -111,12 +124,25 @@ tags: [TLS Handshake, Network, HTTPS, HTTP, SSL/TLS, TCP]
      - **AES-CBC のような AEAD でない暗号方式の場合** → HMAC が必要  
 
 3. **クライアントが復号 & 整合性チェック**  
-   - クライアントがレスポンスを受信後  
-     - 復号: `Plaintext = AES-256-GCM-Decrypt(Server Encryption Key, Ciphertext, Server IV)`  
-       - ここで取得できるのは「HTTPレスポンスデータ + MAC」  
-     - HMAC を再計算し、改ざんチェック: `Verify MAC = HMAC-SHA256(Server MAC Key, HTTPレスポンスデータ)`  
-       - 受信した MAC 値とクライアント側で計算した MAC 値が一致すれば改ざんなし！  
-       - 一致しなければ、改ざんされた可能性があるためレスポンスを拒否する。  
+
+   1. **サーバーからのレスポンス受信**  
+      - サーバーは `Client Encryption Key` を使って `AES-256-GCM` でレスポンスを暗号化。  
+      - クライアントは暗号化された `Ciphertext` と `Server IV` を受信する。  
+
+   2. **復号処理**  
+      - クライアントは **サーバーと共有している `Client Encryption Key`** を使用して `AES-256-GCM` で復号。  
+      - `Plaintext = AES-256-GCM-Decrypt(Client Encryption Key, Ciphertext, Server IV)`  
+      - ここで得られる `Plaintext` には、  
+      **「HTTPレスポンスデータ + MAC（認証タグ）」** が含まれている。  
+
+   3. **整合性チェック**  
+      - `HTTPレスポンスデータ` を取り出し、クライアント側でも HMAC を計算。  
+      - `Verify MAC = HMAC-SHA256(Client MAC Key, HTTPレスポンスデータ)`  
+      - 受信した MAC とクライアント側で計算した MAC を比較し、一致すれば改ざんなし。  
+
+   4. **検証結果に応じた処理**  
+      - **一致する場合:** 正常なレスポンスとして処理を続行。  
+      - **一致しない場合:** 改ざんの可能性があるためレスポンスを破棄。  
 
 ---
 
