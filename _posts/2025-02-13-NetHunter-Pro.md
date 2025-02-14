@@ -11,41 +11,53 @@ tags: [Android, NetHunter Pro, Wardriving]
 - Wardrivingをやってみたかった
 
 所感
-- 簡単にGrapheneOS導入できた。
+- すこし時間がかかったが問題なく導入できた
 
 結果
 - 成功
 
 課題
-- 匿名で利用出来るように設定を細かくしていく
+- 
 
 ## 導入と設定
 
-- イメージファイルをダウンロード: `https://www.kali.org/get-kali/#kali-mobile`
-- 
-
-### 1. 導入
+### 1. ブートローダーをアンロック
 - デバイスを購入: Poco F1 シムフリー 中古を購入
 - ブートローダーをアンロック
-- Mi Unlock Tool をダウンロード: [Mi Unlock Tool](https://en.miui.com/unlock/download_en.html)
-- Guide通りに進めてロックを解除: [OFFICIAL GUIDE](https://new.c.mi.com/global/post/101245?utm_source=miui&utm_medium=official_web_faq&utm_campaign=official_web_miui)
+  - Mi Unlock Tool をダウンロード: [Mi Unlock Tool](https://en.miui.com/unlock/download_en.html)
+  - Guide通りに進めてロックを解除: [OFFICIAL GUIDE](https://new.c.mi.com/global/post/101245?utm_source=miui&utm_medium=official_web_faq&utm_campaign=official_web_miui)
 
-- デバイス設定：
-  - 開発者オプションを有効化：設定 > デバイス情報 > ビルド番号 をタップして「開発者オプション」を有効
-  - OEMアンロック有効化：設定 > システム > 開発者オプション > OEMアンロックを有効
-  - USBデバッグ有効化：設定 > システム > 開発者オプション > USBデバッグを有効
-  - デバイスを最新のファームウェアにアップデート: 設定 > システム > システムアップデートから最新バージョンにアップデート
-  - ウェブインストール方法を利用。Google Chromeを更新：[ヘルプ] > [Google Chrome について] > [再起動]
-  - ブートローダーをアンロック:
-  - USBとスマホを接続：デフォルトのUSB設定 > ファイル転送 （これでPCがデバイスを認識）
-  - 後は公式にしたがって進めていく:
-  - [Web installer](https://grapheneos.org/install/web#booting-into-the-bootloader-interface)
-  - [How to install GrapheneOS on Google Pixel 7/7a (Pixel 7 Pro)](https://www.youtube.com/watch?v=ZAZlmYKrwfk)
-- OSがインストールされてもWifiには繋がずに、Airplain modeをONにする
+### 2. TWRPでデータを削除
 
-### 2. 設定
+- [TWRP Img ダウンロード](https://dl.twrp.me/beryllium/)
+- [SDK Platform-Tools ダウンロード](https://developer.android.com/tools/releases/platform-tools?hl=ja)
+- 解凍してディレクトリを移動: `cd C:\projects\android\platform-tools-latest-windows\platform-tools`
+- デバイスをFASTBOOTモードにしてPCと接続
+- デバイスの認識を確認: `.\fastboot devices`
+- `twrp.img`を同じフォルダに移動
+- TWRPをフラッシュ: `.\fastboot flash recovery twrp.img`
+- TWRPを直接起動`.\fastboot boot twrp.img`
+- スマホの画面が変わりTWRPに入り、中のデータを消去：`「Wipe」→「Format Data」を実行`
+- kaliの`img`を同じフォルダに移動
+- TWRP から Fastboot モードに戻る: `Reboot` → `Bootloader` を選択
+- kaliのbootイメージをフラッシュ: `.\fastboot flash boot nethunterpro-20241215-sdm845-phosh.boot-beryllium-ebbg.img`
+- リブート: `.\fastboot reboot`
+
+### 3. kaliでの設定
+
+- PW: `1234`でログイン
+- Terminalで`sudo apt update`
+ - 401 Errorが出た場合: `sudo vi /etc/apt/sources.list`で下のように書き換える
+```
+deb http://http.kali.org/kali kali-rolling main non-free contrib
+deb-src http://http.kali.org/kali kali-rolling main non-free contrib
+```
+
+
 
 ### 参照
 
+- [How To UNLOCK Bootloader Of Poco F1](https://www.youtube.com/watch?v=v5ytDelaa4w)
+- [How to unlock bootloader and install twrp in poco f1](https://www.youtube.com/watch?v=jK-6AovD3w0&)
 - [Kali NetHunter Pro](https://www.kali.org/docs/nethunter-pro/)
 - [Install kali linux on android natively | Kali Nethunter pro installation 2024](https://www.youtube.com/watch?v=OiU_VK8GXY4)
