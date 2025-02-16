@@ -469,6 +469,8 @@ TLS では Master Secret から派生した **Session Keys** を使って、通�
 
 ## TLS 1.3 のハンドシェイクの流れ
 
+- [安全な通信を実現するTLS 1.3のプロトコル概要をTCPクライアント／サーバーの拡張を例に紹介](https://www.shoeisha.co.jp/book/article/detail/346)
+
 ### 1. Client Hello（クライアント → サーバー）
 - クライアントがサーバーに接続を要求し、**1つのメッセージに複数の情報を含める**（TLS 1.2 より簡素化）。
 - **含まれる情報:**  

@@ -11,10 +11,8 @@ order: 4
 ## Waiting
 
 - [ ] KYC無しでクレジットカードで仮想通過の購入
-- [ ] WarDrivingテスト: NetHunter pro + ALFA AWU036AC
 - [ ] 有料記事のためのプラットフォームの選定/作成
 - [ ] 完全匿名のWebsiteと決済の実装
-- [ ] AndroidスマホにGrapheneOSの導入
 - [ ] マルウェアの実験
 - [ ] badusbのリバースシェルとクラウドへのデータアップロード
 - [ ] SNS(Tiktok, Instagram)自動化スクリプトの調整とまとめ
@@ -23,7 +21,6 @@ order: 4
 - [ ] Youtubeへのコンテンツ作成と知見についてのまとめ
 - [ ] dockerについて
 - [ ] 0-click deanonymization attack
-- [ ] Wifi-Pineappleで学ぶネットワーク
 - [ ] BTC追跡: IPとWalletとBTC
 - [ ] Main PCの分解とUpdate
 - [ ] Monero to Prepaid test (https://stealths.net/product/visa-global-prepaid, https://trocador.app/en/prepaidcards/, https://monerica.com/)
@@ -37,6 +34,7 @@ order: 4
 - [ ] DNS Spoofing
 - [ ] Rogue Gateway
 - [ ] SSL Strip（HTTPSダウングレード）
+- [ ] WarDrivingテスト: NetHunter pro + ALFA AWU036AC
 
 ## Links
 SIM/eSIM
