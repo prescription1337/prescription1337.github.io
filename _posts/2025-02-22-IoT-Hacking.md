@@ -136,21 +136,40 @@ Password:
 - 接続: 
   - CP2102 USB to UART Bridge Controllerのドライバをインストール
     - https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads
+    - ![alt text](../assets/images/Screenshot_2025-03-01_213710.png)
   - PuTTYで上手く接続できないので、Tera Termを利用する
   - ダウンロードしてインストール
     - https://github.com/TeraTermProject/teraterm/releases/tag/v5.3
   - うまくいかないので、TXとRXを入れ替えると、USBが赤色→青色へ
+    - COM7として認識
+    - ![alt text](../assets/images/Screenshot_2025-03-01_213733.png)
+    - ![alt text](../assets/images/Screenshot_2025-03-01_214131.png)
   - `Get-WmiObject Win32_SerialPort`
+    - ![alt text](../assets/images/Screenshot_2025-03-01_220924.png)
   - いったん電源を消して、接続も解除
   - すると接続に成功した。
     - ログには、dropbear という軽量SSHサーバーが起動していることが判明
+    - ![alt text](../assets/images/Screenshot_2025-03-01_221702.png)
   - 権限とユーザーの確認: `cat /etc/passwd`
+    - ![alt text](../assets/images/Screenshot_2025-03-01_222121.png)
   - admin ユーザーが root として設定されているが、パスワードがハッシュ化されている。
     - https://github.com/therealunicornsecurity/therealunicornsecurity.github.io/blob/master/_posts/2020-10-11-TPLink.md
     - PW: `admin:1234`と判明
   - rootとしてログインしようと試みたが、`su`や`sudo`が使えない。
   - busybox コマンドを使ってシェルにアクセス: `busybox sh`
-
+    - ![alt text](../assets/images/Screenshot_2025-03-01_223031.png)
+  - rootにいけないので、SSHで外部から接続してみる。
+    - IPアドレスを特定：`ip addr`
+    - `192.168.0.1`
+    - ![alt text](../assets/images/Screenshot_2025-03-01_223724.png)
+  - dropbearの起動：
+    - ファイルを確認：`ls /var/tmp/dropbear`
+      - ![alt text](../assets/images/Screenshot_2025-03-01_224804.png)
+    - `dropbear -p 22 -r /var/tmp/dropbear/dropbear_rsa_host_key -d /var/tmp/dropbear/dropbear_dss_host_key -A /var/tmp/dropbear/dropbearpwd`
+  - ホストから確認：`ps aux | grep dropbear`
+    - 表示されない
+  - `netstat -tuln`でオープンポートを表示
+    - 
 
 
 ## 参照
