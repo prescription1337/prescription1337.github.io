@@ -23,4 +23,4 @@ order: 6
 - [x]  BoardLight, 2025/03/04, (0/20)
 - [x]  Networked, 2025/03/05, (0/20)
 - [x]  CoztHosting, 2025/03/06, (0/20)
-- [x]  Editorial, 2025/03/07, (/20)
+- [x]  Editorial, 2025/03/07, (0/20)
