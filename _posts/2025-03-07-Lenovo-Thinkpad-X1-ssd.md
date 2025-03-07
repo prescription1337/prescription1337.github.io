@@ -11,24 +11,30 @@ tags: [Thinkpad X1 carbon, ssd]
 
 背景：
 - Touchpad, Keyboardの故障によりパーツ交換の必要性が出た
-- この際、m.2ssdも500GB → 2TBにして、wifiもアップグレードしたかった。
+- この際、m.2ssdも500GB → 2TBにして、wifi、バッテリーもアップグレードしたかった。
 
 交換パーツ：  
 
 
-| パーツ                          | 自作 | 価格 (円) |
-|--------------------------------|------|----------|
-| Palmrest + Keyboard 02HL884   |      | 21652    |
-| Touchpad                      |      | 3374     |
-| 内蔵無線LANカード (Intel AX210) |      | 2149     |
-| m.2 SSD (2TB)                 |      | 15000    |
-| NVMe M.2 SSD用USBアダプター    |      | 1738     |
-| **合計**                      |      | **43913** |
+| パーツ                          | 価格 (円) |
+|--------------------------------|----------|
+| Palmrest + Keyboard 02HL884   | 21652    |
+| Touchpad                      | 3374     |
+| 内蔵無線LANカード (Intel AX210) | 2149     |
+| m.2 SSD (2TB)                 | 15000    |
+| NVMe M.2 SSD用USBアダプター    | 1738     |
+| バッテリー（他のラップトップから流用） | 0        |
+| **合計**                      | **43913** |
 
 
 結果：
 
+- 成功
+
 所感：
+
+- 簡単にメインLaptopの中身を換装できた。
+- T440pとは違い、分解に適したモデルでは無かった。
 
 ## 1. 新しいssdにデータをクローン
 
@@ -63,3 +69,21 @@ tags: [Thinkpad X1 carbon, ssd]
 - バッテリー取り外し
 - SSD・WLAN・WWANの無線モジュールを外す
 - ファンの取り外し+クリーニング
+- システムボード取り外し
+- その他すべて取り外して移管
+- Palmrestに移す
+- 起動
+- 未割当ての領域があるので、ドライブCを拡張。
+  - ここでパーティション同士が隣同士である必要があるため、ツールを使って順番を変更
+  - [MiniTool Partition Wizard ](https://www.partitionwizard.jp/free-partition-manager.html)
+  - ドライブCを拡張
+
+## 3 パーツのリサイクル
+
+- もともと入っていたm.2ssd(500GB)をクリーニング
+- 外付けSSDとして再利用
+
+## 参考
+
+- [Guide: Lenovo ThinkPad X1 Carbon](https://jp.ifixit.com/Device/Lenovo_ThinkPad_X1_Carbon_6th_Gen)
+- [ThinkPad X1 Carbon 分解修理](https://zen-consulting.net/2022/04/08/repair-thinkpadx1carbon/)
