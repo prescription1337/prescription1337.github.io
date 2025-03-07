@@ -54,3 +54,6 @@ tags: [Thinkpad X1 carbon, ssd]
 
 ## 2. Thinkpad X1 Carbon 6gen を分解
 
+- バッテリー取り外し
+- SSD・WLAN・WWANの無線モジュールを外す
+- ファンの取り外し+クリーニング
