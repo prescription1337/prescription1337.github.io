@@ -177,13 +177,22 @@ sudo systemctl start ssh
   - `sync` and `reboot`
   - リブート出来たらsshに再接続してログを確認: `dmesg -W`
 
+## 公式を再インストール
 
-
-
-
-
-
-
+- 準備：
+- データを削除して綺麗にする
+- Fastboot モードに入る
+- 電源 + 音量下ボタンを長押し
+- デバイス認識の確認：`.\fastboot devices`
+- ブートローダーアンロックの確認: `.\fastboot oem device-info`
+- ![alt text](../assets/images/Screenshot_2025-03-13_181350.png)
+- TWRPをフラッシュ: `.\fastboot flash recovery twrp.img`
+- TWRPを直接起動: `.\fastboot boot twrp.img`
+- スマホの画面が変わりTWRPに入り、中のデータを消去：「Wipe」→「Format Data」を実行
+- userdataの削除：`.\fastboot erase userdata`
+- userdataをフラッシュ：`.\fastboot flash userdata nethunterpro-20241215-sdm845-phosh.rootfs.img`
+- bootイメージをフラッシュ: `.\fastboot flash boot nethunterpro-20241215-sdm845-phosh.boot-beryllium-ebbg.img`
+- リブート: .\fastboot reboot
 
 - 参照
   - [Kali Phosh for PinePhone and Qcom Phones](https://github.com/Shubhamvis98/kali-pinephone/releases)
