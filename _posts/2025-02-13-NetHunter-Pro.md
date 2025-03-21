@@ -68,12 +68,14 @@ deb-src http://http.kali.org/kali kali-rolling main non-free contrib
 - スマホでの操作が面倒なので、windowsからssh接続して操作する
 - windowsで`putty`をインストール
 - スマホでssh起動  
+
 ```bash
 systemctl status ssh
 sudo systemctl enable ssh
 sudo systemctl start ssh
-
 ```
+
+
 - スマホのipで指定して接続
 - スマホにWiFiアダプタを認識させる
 - ドライバのインストール`sudo apt install realtek-rtl88xxau-dkms`
@@ -144,6 +146,7 @@ sudo systemctl start ssh
   - ![alt text](../assets/images/Screenshot_2025-02-16_100736.png)
   - DTBファイルがテキストファイルになっているのを確認
 - このtxtファイルの`dr_mode`の値を修正: `peripheral`→`host`
+  - `cat a.dts | grep dr_mode`
   - ![alt text](../assets/images/Screenshot_2025-02-16_100958.png)
   - `sed -i 's/dr_mode = "peripheral"/dr_mode = "host"/g' a.dts`
   - ![alt text](../assets/images/Screenshot_2025-02-16_101335.png)
@@ -163,6 +166,7 @@ sudo systemctl start ssh
   - `dd if=/dev/disk/by-partlabel/boot of=boot.img`
    - ![alt text](../assets/images/Screenshot_2025-02-16_103244.png)
 - replace the modified DTB-appended kernel in the boot.img
+  - `apt update && apt install abootimg -y`
   - `abootimg -u boot.img -k kernel-dtb`
     - ![alt text](../assets/images/Screenshot_2025-02-16_103608.png)
   - 古いイメージの削除: 
@@ -176,6 +180,24 @@ sudo systemctl start ssh
     - ![alt text](../assets/images/Screenshot_2025-02-16_104246.png)
   - `sync` and `reboot`
   - リブート出来たらsshに再接続してログを確認: `dmesg -W`
+
+- Wifi adapterを使えるようにする
+- ファームウェアのダウンロード
+- `sudo wget https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/rt2870.bin -O /lib/firmware/rt2870.bin`
+- ファームウェアファイルにパーミッションを与える
+- `sudo chmod 644 /lib/firmware/rt2870.bin`
+- `sudo chown root:root /lib/firmware/rt2870.bin`
+- Wi-Fiドライバの再読み込み
+- `sudo modprobe -r rt2800usb`
+- `sudo modprobe rt2800usb`
+- ドライバの状態を再確認
+- `dmesg | grep rt2800usb`
+- デバイスの状態を確認
+- `lsusb`
+- Wi-Fiアダプタの認識確認
+- `dmesg | tail -n 20`
+- Scanでアダプタが使えるか確認
+- `sudo iw dev wlan1 scan | grep SSID`
 
 ## 公式を再インストール
 
