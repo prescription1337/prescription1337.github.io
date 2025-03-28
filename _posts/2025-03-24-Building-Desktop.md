@@ -79,11 +79,31 @@ tags: [Desktop]
   - `Chipset`が様々なCPUに対応していても`Socket Type`によって取り付けられるCPUが決まる
   - `Chipset`が様々なMemory(DDR4, DDR5など)に対応していても、マザーボードによってどちらかしか対応してない場合がある。
 
+## 3. M.2 SSDにUbuntu Server 22.04 LTSをインストール
+
+- M.2 SSDの準備
+  - Windowsキー + X を押して「ディスクの管理」を開く
+  - GPTを選ぶと、初期化されて未割当の状態になる。
+    - ![alt text](../assets/images/Screenshot_2025-03-28_180802.png)
+- USBの準備
+  - OSのisoをダウンロード：[Ubuntu Server 22.04 LTS](https://ubuntu.com/download/server)
+  - RufusでisoをUSBに焼く
+    - ![alt text](../assets/images/Screenshot_2025-03-28_182302.png)
+- 設定とインストール
+  - サブ機のBIOSに入ってbootの順番を変える。(USB)
+  - 再起動して、USBからブートする
+  - Try or Install Ubuntu Serverを選ぶ
+  - 動画を参照しながらインスト―ルを行う
+
+## 4. 組み立て
+
+
 ## 参考
 
 - 理解：
 - [マザーボードの選び方＆基礎知識をわかりやすく解説](https://www.youtube.com/watch?v=2Q6KD1FEJDg)
 - [How do computers work?](https://www.youtube.com/watch?v=4knBXkN1GEU)
+- [Install Ubuntu Server 22.04 LTS](https://www.youtube.com/watch?v=zs2zdVPwZ7E)
 
 
 
