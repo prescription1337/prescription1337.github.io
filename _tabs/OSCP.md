@@ -1,6 +1,6 @@
 ---
 # the default layout is 'page'
-icon: fas fa-tasks
+icon: fas fa-user-secret
 order: 6
 ---
 
