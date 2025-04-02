@@ -95,7 +95,11 @@ tags: [Desktop]
   - Try or Install Ubuntu Serverを選ぶ
   - 動画を参照しながらインスト―ルを行う
 
-## 4. 組み立て
+## 4. 構築
+
+- system information確認
+  - `landscape-sysinfo`
+
 
 
 ## 参考

@@ -36,7 +36,6 @@ tags: [Thinkpad X1 carbon, ssd]
 - 設定してスタート
   - ![alt text](../assets/images/Screenshot_2025-03-09_175814.png)
 
-
 ## 3 設定とインストール
 
 - mainのBIOSに入ってbootの順番を変える。(USB)
@@ -58,3 +57,10 @@ tags: [Thinkpad X1 carbon, ssd]
   - USBを取り外す
   - 起動して確認
 
+## 4. 設定
+
+- システム情報の確認
+  - `neofetch`
+- 日本語入力: 成功
+  - [Arch Linuxの初期設定](https://qiita.com/poyotanp/items/e59336dd6b42283fda2e#fn-1)
+- 
