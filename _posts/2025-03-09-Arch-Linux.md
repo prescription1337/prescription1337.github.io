@@ -59,8 +59,43 @@ tags: [Thinkpad X1 carbon, ssd]
 
 ## 4. 設定
 
+- リポリスト更新とアップグレード
+  - `sudo pacman -Sy`
+  - `sudo pacman -Syu`
 - システム情報の確認
   - `neofetch`
 - 日本語入力: 成功
   - [Arch Linuxの初期設定](https://qiita.com/poyotanp/items/e59336dd6b42283fda2e#fn-1)
-- 
+- エディタ
+  - `sudo pacman -S code`
+- スクリーンショット
+  - `sudo pacman -S flameshot`：バグが起きる
+  - バグ：[Weird behavior on Wayland with KDE](https://github.com/flameshot-org/flameshot/issues/3204)
+  - flameshot直し方： [Flameshot doesn't capture full desktop w/ multi-monitor](https://github.com/flameshot-org/flameshot/issues/3073#issuecomment-1740187784)
+    - `ArjixWasTaken`が言っているように`flatpak`から`flameshot`をインストールして、`Flatseal`で`Environment`を変更することで起動できるようになった
+  - 手順：
+    - 1.`flatseal`をインストール
+      - `sudo pacman -S git base-devel`
+      - `git clone https://aur.archlinux.org/yay.git`
+      - `cd yay`
+      - `makepkg -si`
+      - `yay -S flatseal`
+    - 2. flatpak経由でflatsealを実行
+      - `flatpak install flathub com.github.tchx84.Flatseal`
+      - `flatpak run com.github.tchx84.Flatseal`
+    - 3. flatsealでFlameshotの設定
+      - `Flameshot`の`Environment`に新しい環境変数を追加
+        - `QT_QPA_PLATFORM: xcb`
+    - 4. flameshotをインストールし起動
+      - `flatpak install flathub org.flameshot.Flameshot`
+      - `flatpak run org.flameshot.Flameshot gui `
+    - 5. 起動方法を変更
+      - `echo 'alias flameshot="flatpak run org.flameshot.Flameshot"' | tee -a ~/.bashrc`
+      - `source ~/.bashrc`
+      - これでコマンド`flameshot gui`で起動可能
+    - 6. Ctrl+S を Flameshot の保存専用にする
+      - Ctrl + S が XON/XOFF フロー制御（ソフトウェアフロー制御）の「出力停止（Suspend Output）」として機能してしまっているので、変更
+      - `echo "stty -ixon" | tee -a ~/.bashrc`
+      - `source ~/.bashrc`
+- 画像ビューア
+  - `sudo pacman -S sxiv`
