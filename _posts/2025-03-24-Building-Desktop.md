@@ -120,6 +120,76 @@ tags: [Desktop]
   - `sudo systemctl restart NetworkManager`
   - `nmcli device`: connectedになっていれば成功
   - GUIのSystemからWi-Fiの表示を確認
+- ブラウザ
+  - `sudo apt install firefox`
+- Nextcloud
+  - 準備：
+    - HDDをクラウドで利用できるようにする。ここにObsidianのvaultをおいてどのデバイスからでもアクセス可能にさせる
+    - Linuxでは、すべてのストレージは「どこかのフォルダ」に“マウント”しないと使えないので、どこかのフォルダにマウントポイントを指定する
+    - `lsblk`：デバイス名の確認
+    - `sudo mount /dev/sdb1 /mnt/nextcloud`
+      - `/dev/sdb1`(HDDのパーティション)を`/mnt/nextcloud`を通じて中見を見れる
+    - `df -h | grep nextcloud`：マウントされているか中身を確認。
+      - 昔のデータが入っていたので、完全に削除してフォーマットし、クリーンな状態にする
+      - `sudo umount /mnt/nextcloud`
+      - `sudo fdisk /dev/sdb` → `d` → `w`: パーティションを削除
+      - `sudo fdisk /dev/sdb` → `n` → `w`: パーティションを新しく作成
+      - `sudo mkfs.ext4 /dev/sdb1`: ファイルシステムを新しく作成（フォーマット）
+    - もう一度マウント：`sudo mount /dev/sdb1 /mnt/nextcloud`
+ - Nextcloudをインストールしていく
+   - MariaDBをインストール
+     - 用途：
+       - Nextcloudのデータを保存するために必要な**データベース管理システム（DBMS）**
+       - Nextcloudは、ユーザー情報、ファイルメタデータ、設定情報、アプリケーションの設定など、多くの情報をデータベースに保存する
+     - `sudo apt install mariadb-server -y`: インストール
+     - `sudo systemctl daemon-reload`
+     - `sudo mysql_secure_installation`: MariaDBのセキュリティ設定
+   - NextcloudのデータベースをMariaDBに作成
+     - `sudo mysql -u root -p`: MariaDBにログイン
+     - `CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;`: Nextcloud用のデータベースを作成
+     - `SHOW DATABASES;`: DBが作成されたか確認
+     - `CREATE USER 'bentham'@'localhost' IDENTIFIED BY 'yourpassword';`: Nextcloud用のデータベースユーザーを作成
+     - `SELECT User, Host FROM mysql.user;`: ユーザーが作成されたか確認
+     - `GRANT ALL PRIVILEGES ON nextcloud.* TO 'bentham'@'localhost';`: 適切な権限を付与
+     - `SHOW GRANTS FOR 'yourusername'@'localhost';`: 権限が適切に設定されたのか確認
+     - `FLUSH PRIVILEGES;`: 変更を適応
+     - `EXIT;`: MariaDBを終了
+   - ApacheとPHPをセットアップ：
+     - 用途：Nextcloudをホストするために、ApacheとPHPをインストールする必要がある
+     - `sudo apt install apache2 libapache2-mod-php -y`: インストール
+     - `sudo apt install php php-gd php-json php-mysql php-curl php-xml php-zip php-mbstring php-bz2 php-intl php-imagick php-xmlrpc php-gmp php-soap -y`: PHPの必要な拡張モジュールをインストール
+     - `sudo systemctl enable apache2`: Apacheを有効化
+     - `sudo systemctl start apache2`: Apacheを起動
+     - `sudo systemctl status apache2`: 起動確認
+   - Nextcloudのダウンロードとインストール
+     - `cd /var/www/html`
+     - `sudo wget https://download.nextcloud.com/server/releases/nextcloud-31.0.2.zip`
+     - `sudo apt install unzip`
+     - `sudo unzip nextcloud-31.0.2.zip`: 解凍
+     - `sudo chown -R www-data:www-data /var/www/html/nextcloud`: NextcloudのファイルをApacheがアクセスできるように所有権を設定
+     - `sudo nano /etc/apache2/sites-available/nextcloud.conf`: NextcloudをWebサーバーで動作させるために、Apacheを設定
+       - ![alt text](../assets/images/Screenshot_2025-04-04_183508.png)
+     - Apacheの設定を有効にして、Apacheを再起動
+       - `sudo a2ensite nextcloud.conf`
+       - `sudo a2enmod rewrite`
+       - `sudo systemctl restart apache2`
+   - Nextcloudのセットアップ
+     - ブラウザで、`http://{your-server-ip}/nextcloud` にアクセス
+     - Nextcloudのインストール画面が表示されるので、設定。
+     - installをクリック：Error `cannot create or write into the data directory /mnt/nextcloud`
+       - `sudo chown -R www-data:www-data /mnt/nextcloud`: データディレクトリの所有者を変更
+       - `sudo chmod -R 755 /mnt/nextcloud`: 適切な権限を設定
+     - installをクリック → ページ(`http://nextcloud/index.php/core/apps/recommended`)に移動された
+       - Error: `Hmm. We're having trouble finding that site`
+       - `sudo mount /dev/sdb1 /mnt/nextcloud`：マウントをやり直す
+       - `sudo mkdir /mnt/nextcloud/data`: /mnt/nextcloud ディレクトリ内にデータディレクトリを作成
+       - www-data ユーザーとグループに所有権を変更
+         - `sudo chown -R www-data:www-data /mnt/nextcloud`
+         - `sudo chmod -R 755 /mnt/nextcloud`
+         - `sudo touch /mnt/nextcloud/.ncdata`: 手動で .ncdata を作成
+       - ダッシュボードにアクセス出来た：`http://{your-server-ip}/nextcloud/index.php/apps/dashboard/`
+  - Nextcloudを設定：
+    - 
 
 
 ## 参考
