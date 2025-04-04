@@ -99,7 +99,27 @@ tags: [Desktop]
 
 - system information確認
   - `landscape-sysinfo`
-
+- ネットワーク設定：
+  - `sudo nano /etc/netplan/50-cloud-init.yaml`
+  - `sudo netplan apply`
+- GUIのインストール
+  - `sudo apt install xfce xfce4-goodies xrdp -y`
+  - `sudo systemctl enable xrdp`
+- Login画面のインストール
+  - `sudo apt install gdm3`
+  - `sudo dpkg-reconfigure gdm3`
+  - `sudo systemctl start gdm3`
+  - `sudo reboot`
+  - GUIが表示されたら成功
+- Wi-Fiを表示可能に設定を変更
+  - `sudo nano /etc/NetworkManager/NetworkManager.conf`
+  - `managed=true`に変更
+  - `sudo nano /etc/netplan/50-cloud-init.yamal`
+    - `renderer: NetworkManager`を`version`の下に追加
+  - `sudo netplan apply`
+  - `sudo systemctl restart NetworkManager`
+  - `nmcli device`: connectedになっていれば成功
+  - GUIのSystemからWi-Fiの表示を確認
 
 
 ## 参考
