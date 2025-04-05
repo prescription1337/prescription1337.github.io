@@ -226,8 +226,33 @@ tags: [Desktop]
         - `sudo nano /etc/php/8.3/apache2/php.ini` → `memory_limit = 512M`に変更
         - `sudo systemctl restart apache2`: Apacheを再起動
     - 黄エラー: 1
-    - 
-
+      - `Server has no maintenance window start time configured. This means resource intensive daily background jobs will also be executed during your main usage time. We recommend to set it to a time of low usage, so users are less impacted by the load caused from these heavy tasks`
+      - 解消：
+        - `sudo nano /var/www/html/nextcloud/config/config.php`
+          - `'maintenance_window_start' => 5,`: UTCで午前5時、つまり日本時間で午前2時に設定
+    - 黄エラー: 2
+      - `One or more mimetype migrations are available. Occasionally new mimetypes are added to better handle certain file types. Migrating the mimetypes take a long time on larger instances so this is not done automatically during upgrades. Use the command occ maintenance:repair --include-expensive to perform the migrations`
+      - 解消：
+        - `sudo -u www-data php /var/www/html/nextcloud/occ maintenance:repair --include-expensive`
+    - 黄エラー：3
+      - `Some headers are not set correctly on your instance - The Strict-Transport-Security HTTP header is not set (should be at least 15552000 seconds). For enhanced security, it is recommended to enable HSTS.`
+      - 解消：
+        - nextcloud.conf ファイル（HTTPの設定）を編集: HTTP（ポート80）へのアクセスをHTTPS（ポート443）にリダイレクトするために、nextcloud.conf ファイルを編集
+          - `sudo nano /etc/apache2/sites-available/nextcloud.conf`
+          - `<VirtualHost *:80>` セクションに以下の設定を追加
+          - `Redirect permanent / https://nextcloud.local/`
+        - nextcloud-ssl.conf ファイル（HTTPSの設定）を編集: 次に、HTTPS（ポート443）でアクセスされた場合にHSTSヘッダーを設定
+          - `sudo nano /etc/apache2/sites-available/nextcloud-ssl.conf`
+          - `Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains; preload"`: 追加
+        - headers モジュールを有効にする
+          - `sudo a2enmod headers`
+        - Apacheの再起動
+          - `sudo systemctl restart apache2`
+    - 細かい設定：
+      - `http://192.168.1.110`にアクセスしたときにapache2のデフォルトページに入ってしまう。
+      - 解消：
+        - `sudo a2dissite 000-default.conf`
+        - `sudo systemctl restart apache2`
 
 ## 参考
 
