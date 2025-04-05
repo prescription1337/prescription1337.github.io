@@ -182,13 +182,50 @@ tags: [Desktop]
      - installをクリック → ページ(`http://nextcloud/index.php/core/apps/recommended`)に移動された
        - Error: `Hmm. We're having trouble finding that site`
        - `sudo mount /dev/sdb1 /mnt/nextcloud`：マウントをやり直す
+       - `sudo nano /etc/fstab`: 永続的なマウントを設定
+         - `/dev/sdb1 /mnt/nextcloud ext4 rw,auto,user,exec,suid 0 2`
        - `sudo mkdir /mnt/nextcloud/data`: /mnt/nextcloud ディレクトリ内にデータディレクトリを作成
        - www-data ユーザーとグループに所有権を変更
          - `sudo chown -R www-data:www-data /mnt/nextcloud`
          - `sudo chmod -R 755 /mnt/nextcloud`
          - `sudo touch /mnt/nextcloud/.ncdata`: 手動で .ncdata を作成
+         - `echo "# Nextcloud data directory" | sudo tee /mnt/nextcloud/.ncdata`
        - ダッシュボードにアクセス出来た：`http://{your-server-ip}/nextcloud/index.php/apps/dashboard/`
   - Nextcloudを設定：
+    - `Security & Setup warnings`にはエラーが表示されているので、上から解消していく
+    - 赤エラー:1
+      - ![alt text](../assets/images/Screenshot_2025-04-05_152159.png)
+      - 解消：
+        - `sudo -u www-data php /var/www/html/nextcloud/cron.php`: 手動で実行し成功。
+        - ダッシュボードで更新してエラー解消を確認
+        - `sudo crontab -u www-data -e`: 自動実行を設定
+          - `*/5 * * * * php -f /var/www/html/nextcloud/cron.php`
+          - `www-data` ユーザーが5分ごとに`cron.php`をコマンドラインで実行するようにした。
+          - つまり、Nextcloudのバックグラウンド処理が自動で定期実行される状態
+    - 赤エラー2: 
+      - `Accessing site insecurely via HTTP. You are strongly advised to set up your server to require HTTPS instead. Without it some important web functionality like "copy to clipboard" or "service workers" will not work! For more details see the documentation`
+      - 解消：自己署名証明書でHTTPS化（ローカル向け）
+        - OpenSSLで証明書を作る
+          - `sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nextcloud-selfsigned.key -out /etc/ssl/certs/nextcloud-selfsigned.crt`
+            - Common Name には nextcloud.local とか your-server-ip を書くと吉
+        -  ApacheにSSL設定を追加
+          - `sudo nano /etc/apache2/sites-available/nextcloud-ssl.conf`
+          - ![alt text](../assets/images/Screenshot_2025-04-05_152159.png)
+        - サイトを有効化してApache再起動
+          - `sudo a2enmod ssl`
+          - `sudo a2ensite nextcloud-ssl.conf`
+          - `sudo systemctl restart apache2`
+        - ブラウザでアクセス：`https://your-server-ip/nextcloud でアクセス`
+          - 「この接続は安全ではありません」みたいな警告は出るけど、「続行」を押せばOK（自己署名証明書だから）
+    - 赤エラー3: 
+      - `The PHP memory limit is below the recommended value of 512MB. Some features or apps - including the Updater - may not function properly.`
+      - 解消：
+        - `sudo apt install libapache2-mod-php8.3`: Apache + PHP 8.3 用のモジュールをインストール
+        - `php -v`: phpのバージョン確認 → `8.3.6`
+        - `php --ini`: 該当の php.ini を探す
+        - `sudo nano /etc/php/8.3/apache2/php.ini` → `memory_limit = 512M`に変更
+        - `sudo systemctl restart apache2`: Apacheを再起動
+    - 黄エラー: 1
     - 
 
 
