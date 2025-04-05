@@ -248,11 +248,26 @@ tags: [Desktop]
           - `sudo a2enmod headers`
         - Apacheの再起動
           - `sudo systemctl restart apache2`
+    - 黄エラー：4
+      - `The PHP OPcache module is not properly configured. The OPcache buffer is nearly full. To assure that repeating strings can be effectively cached. it is recommended to apply "opcache.interned_strings_buffer" to your PHP configuration with a value higher than "8"`
+      - 解消：
+        - `sudo nano /etc/php/8.3/apache2/php.ini` 
+        - `sudo nano /etc/php/8.3/apache2/php.ini` → `opcache.interned_strings_buffer = 16`に変更
+          - `Ctrl` + `W` → `interned_strings_buffer`で検索できる
+        - `sudo systemctl restart apache2`
     - 細かい設定：
       - `http://192.168.1.110`にアクセスしたときにapache2のデフォルトページに入ってしまう。
-      - 解消：
-        - `sudo a2dissite 000-default.conf`
-        - `sudo systemctl restart apache2`
+        - 解消：
+          - `sudo a2dissite 000-default.conf`
+          - `sudo systemctl restart apache2`
+      - `png`や`pdf`がnextcloud上で表示出来ない
+        - 解消：
+          - `sudo apt install php-imagick ghostscript -y`
+          - `sudo systemctl restart apache2`
+    - Nextcloudの構造
+      - ![alt text](../assets/images/Screenshot_2025-04-05_204513.png)
+      - ダッシュボードの「All files」で見えるファイル: `/mnt/nextcloud/data/bentham/files`
+
 
 ## 参考
 
