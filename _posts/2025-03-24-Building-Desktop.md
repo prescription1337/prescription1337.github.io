@@ -168,7 +168,7 @@ tags: [Desktop]
      - `sudo unzip nextcloud-31.0.2.zip`: 解凍
      - `sudo chown -R www-data:www-data /var/www/html/nextcloud`: NextcloudのファイルをApacheがアクセスできるように所有権を設定
      - `sudo nano /etc/apache2/sites-available/nextcloud.conf`: NextcloudをWebサーバーで動作させるために、Apacheを設定
-       - ![alt text](../assets/images/Screenshot_2025-04-04_183508.png)
+     - ![alt text](../assets/images/Screenshot_2025-04-04_183509.png)
      - Apacheの設定を有効にして、Apacheを再起動
        - `sudo a2ensite nextcloud.conf`
        - `sudo a2enmod rewrite`
@@ -265,8 +265,68 @@ tags: [Desktop]
           - `sudo apt install php-imagick ghostscript -y`
           - `sudo systemctl restart apache2`
     - Nextcloudの構造
-      - ![alt text](../assets/images/Screenshot_2025-04-05_204513.png)
-      - ダッシュボードの「All files」で見えるファイル: `/mnt/nextcloud/data/bentham/files`
+      - ダッシュボードの「All files」で見えるファイル: `/mnt/nextcloud/bentham/files`
+- 外出先から自宅のNextcloudサーバーへTailscaleでアクセス出来るようにする
+  - Tailscaleをインストール
+    - `curl -fsSL https://tailscale.com/install.sh | sh`
+  - サービス起動
+    - `sudo tailscale up`
+    - 初回実行時にログイン用のURLが表示されるので、それをブラウザで開いてGoogleアカウントなどで認証
+  - 外出先のノートPC側（Archなど）にも導入
+    - `sudo pacman -S tailscale`
+    - `sudo systemctl enable --now tailscaled`
+    - `sudo tailscale up`: サーバーと同じ方法で認証
+  - 接続の確認
+    - `tailscale status`
+  - ArchのlaptopからTailscaleを利用してサーバーのNextcloud上のObsidian Vaultフォルダを指定する
+    - Server側の準備：
+      - SSHサーバインストール: `sudo apt install openssh-server`
+      - 起動：`sudo systemctl start ssh`
+      - サーバーのSSHポートが開いているか確認: `sudo ufw allow 22`
+    - Arch側の準備
+      - SSHキー作成：`ssh-keygen -t rsa -b 4096`
+        - 生成した鍵ペアは`~/.ssh/id_rsa`と`~/.ssh/id_rsa.pub`に保存される
+      - 公開鍵をサーバーに追加
+        - `ssh-copy-id bentham@{Tailscale_IP}`
+    - archからSSHでサーバに接続
+      - `ssh bentham@{Tailscale_IP}`: 接続完了
+    - ファイルシステムへのマウント
+      - `/mnt/nextcloud/bentham/files/obsidian_vault`フォルダをArchのローカルにマウント
+        - `sudo pacman -S sshfs`: SSHFSをインストール
+        - `mkdir ~/nextcloud_vault`: マウントするディレクトリを作成
+        - `chmod 755 ~/nextcloud_vault`
+        - `sshfs bentham@100.120.163.68:/mnt/nextcloud/bentham/files/obsidian_vault ~/nextcloud_vault`
+          - これでArch obsidianでvaultを指定できる
+        - `Permission Denied`で上手くいかない。権限変更しても不可
+- Nextcloud + WebDAV + Tailscale の構成でやってみる
+  - davfs2 パッケージをインストール: `yay -S davfs2`
+  - マウントポイントの作成：`mkdir -p ~/nextcloud_vault`
+  - 自己署名証明書を許可する: `sudo nano /etc/davfs2/davfs2.conf`
+    - `use_locks 0`にする
+  - Server側の設定：
+    - `sudo nano /var/www/html/nextcloud/config/config.php`
+      - tailscaleのサーバーのIPを追加：`2 => 'tailscale_IP'`
+    - `sudo systemctl restart apache2`
+  - nextcloudのフォルダをローカルにマウント
+    - `sudo mount -t davfs https://{tailscale_IP}/remote.php/dav/files/bentham/ ~/nextcloud_vault`
+    - `ls -la /nextcloud_vault`：nextcloudのフォルダが表示されたら成功。
+  - 自動的にマウントされるように設定する
+    - `sudo umount /home/bentham/nextcloud_vault`: いったんマウント解除
+    - `sudo mkdir Nextcloud`: マウントポイント作成
+    - `sudo nano /etc/fstab`
+      - `https://{tailscale_IP}/remote.php/dav/files/bentham/  /home/bentham/Nextcloud  davfs  _netdev,auto,rw,user  0  0`
+    - `sudo nano /etc/davfs2/secrets`:認証情報を設定
+      - `https://{tailscript_IP}/remote.php/dav/files/bentham/obsidian_vault/ bentham your_password`
+    - 自動マウントのテスト
+      - `sudo mount -a`: 成功
+      - これで、Archのラップトップの`/home/bentham/Nextcloud`は常にNextcloudと繋がっている状態になった。
+      - エラー：起動時に接続待ちがかなり長くなり、使い勝手が悪いのでこの方法での自動マウントをやめる
+  - `systemd`タイマーを使って、立ち上げ後に自動的にマウントするように設定する
+    - systemd サービスの作成: `sudo nano /etc/systemd/system/mount-nextcloud.service`
+    - systemd タイマーを作成: `sudo nano /etc/systemd/system/mount-nextcloud.timer`
+    - サービスとタイマーを有効化：`sudo systemctl start mount-nextcloud.service`と`sudo systemctl start mount-nextcloud.timer`
+    - 
+
 
 
 ## 参考

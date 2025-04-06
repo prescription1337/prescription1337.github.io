@@ -99,3 +99,7 @@ tags: [Thinkpad X1 carbon, ssd]
       - `source ~/.bashrc`
 - 画像ビューア
   - `sudo pacman -S sxiv`
+- Google Chrome
+  - `yay -S google-chrome`
+- Obsidian
+  - `yay -S obsidian`
