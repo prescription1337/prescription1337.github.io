@@ -325,7 +325,86 @@ tags: [Desktop]
     - systemd サービスの作成: `sudo nano /etc/systemd/system/mount-nextcloud.service`
     - systemd タイマーを作成: `sudo nano /etc/systemd/system/mount-nextcloud.timer`
     - サービスとタイマーを有効化：`sudo systemctl start mount-nextcloud.service`と`sudo systemctl start mount-nextcloud.timer`
-    - 
+    - 再起動したが、自動マウントされず。
+      - ログを確認：`journalctl -u mount-nextcloud.service`
+      - 自己署名証明書に対して、承認エラーが発生していると発覚
+      - 自己署名証明書を信頼させるには、サーバー証明書をシステム側で「信頼済み」に登録する必要がある
+        - Nextcloudサーバーの証明書を取得: `echo -n | openssl s_client -connect {tailscale_IP}:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > ~/nextcloud-selfsigned.crt`
+          - 自己署名証明書が ~/nextcloud-selfsigned.crt として保存される
+        - 証明書を davfs2 に認識させる
+          - `sudo mkdir -p /etc/davfs2/certs`
+          - `sudo cp ~/nextcloud-selfsigned.crt /etc/davfs2/certs/`
+        - 一応システム全体で信頼させておく（curlやwebブラウザでアクセスしたときの面倒を排除するため）
+          - `sudo cp ~/nextcloud-selfsigned.crt /etc/ca-certificates/trust-source/anchors/`
+          - `sudo trust extract-compat`
+      - まだエラーが出るので、davfs2.conf で証明書チェックを完全にスキップする
+        - `sudo nano /etc/davfs2/davfs2.conf`
+        - `trust_server_cert {tailscale_IP}`
+        - 証明書を davfs2 に認識させる
+          - `sudo cp /etc/davfs2/certs/nextcloud-selfsigned.crt /etc/davfs2/certs/{tailscale_IP}`
+        - 権限を変更：
+          - `sudo chmod 644 /etc/davfs2/certs/{tailscale_IP}`
+          - `sudo chown root:root /etc/davfs2/certs/{tailscale_IP}`
+
+### Nextcloud連携・全体構成図（外部からファイル同期まで）
+- ここまでの構成を確認
+
+┌────────────────────────────┐
+│       Arch Linux（外部PC）            │
+│ ─ Obsidian                          │
+│ ─ systemd mount + davfs2           │
+└────────────────────────────┘
+         │
+         │(1) 起動時に Tailscale で VPN接続
+         ▼
+┌────────────────────────────┐
+│     Tailscale Virtual Network         │
+│ ─ Tailscale IP: 100.xxx.xxx.xxx       │
+└────────────────────────────┘
+         │
+         │(2) WebDAV 接続 (HTTPS)
+         ▼
+┌──────────────────────────────────────┐
+│ Nextcloud サーバー（Ubuntu）                  │
+│ ─ Local IP: 192.168.1.110                       │
+│ ─ Hostname: nextcloud.local                    │
+│ ─ Tailscale IP: 100.xxx.xxx.xxx                │
+│                                                │
+│ ┌────────────────────────────────────────┐     │
+│ │ Webサーバ（Apache2） + PHP              │     │
+│ │  └─ サービス: https://nextcloud.local   │     │
+│ │                     or https://192.168.1.110 │
+│ │  └─ WebDAVエンドポイント：             │     │
+│ │      /remote.php/dav/files/bentham/     │     │
+│ └────────────────────────────────────────┘     │
+│                                                │
+│ ┌────────────────────────────────────────┐     │
+│ │ ストレージ構成                              │
+│ │ ─ /dev/sdb1（HDD） → /mnt/nextcloud にマウント│
+│ │ ─ Nextcloud のデータディレクトリがここにある │
+│ └────────────────────────────────────────┘     │
+└──────────────────────────────────────┘
+         ▲
+         │
+         │(3) Arch 側に `/home/bentham/Nextcloud` としてマウント
+         ▼
+┌────────────────────────────┐
+│   ローカル編集＋即反映（双方向同期）     │
+│ → Obsidianでノート編集など              │
+└────────────────────────────┘
+
+
+- Nextcloudアクセス構成:  
+
+| **構成要素**                 | **内容**                                                                 |
+|-----------------------------|--------------------------------------------------------------------------|
+| **VPN接続**                 | 外出先から Tailscale を使って Nextcloud サーバに安全にアクセス        |
+| **Nextcloudサーバ**         | Ubuntu + Apache2 + PHP。Nextcloud の実データは `/mnt/nextcloud` に配置 |
+| **ローカル接続名**           | `nextcloud.local`（LAN内向け）、`192.168.1.110`                          |
+| **WebDAVアクセス（外部）** | `https://{Tailscale_IP}/remote.php/dav/files/bentham/` 経由で接続       |
+| **証明書**                  | Self-signed 証明書を使用、`trust_server_cert` によりバイパス設定済み    |
+| **自動マウント**            | `systemd` によりログイン後にマウント実行、認証情報は `/etc/davfs2/secrets` に保存 |
+| **同期ディレクトリ（Arch）**| Arch 上の `/home/bentham/Nextcloud` に WebDAV をマウントし、Obsidian などで編集可能 |
 
 
 
