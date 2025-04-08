@@ -406,6 +406,23 @@ tags: [Desktop]
 | **自動マウント**            | `systemd` によりログイン後にマウント実行、認証情報は `/etc/davfs2/secrets` に保存 |
 | **同期ディレクトリ（Arch）**| Arch 上の `/home/bentham/Nextcloud` に WebDAV をマウントし、Obsidian などで編集可能 |
 
+### 設定継続
+
+- メイン(Windows11)からサーバーへ接続
+  - `ssh bentham@192.168.1.110`
+  - 公開鍵認証を設定する（パスワード不要に）
+    - `ssh-keygen -t ed25519 -C "Windows11 main key"`
+    - 公開鍵をサーバへコピー
+      - コピーして貼り付け(`ssh-ed25519 {KEY} ebisu@LAPTOP-NMSNU7B7`の形式)
+      - `nano ~/.ssh/authorized_keys`
+    - サーバー側のSSH設定が公開鍵認証を許可するように設定
+      - `sudo nano /etc/ssh/sshd_config`
+      - コメントアウトされていたら修正：`PubkeyAuthentication yes`, `AuthorizedKeysFile     .ssh/authorized_keys`, `PasswordAuthentication no`
+    - なぜかうまくいかないので、PW毎回入力する
+  - 
+  - 
+
+
 
 
 ## 参考
