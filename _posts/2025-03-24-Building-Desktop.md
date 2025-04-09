@@ -406,6 +406,27 @@ tags: [Desktop]
 | **自動マウント**            | `systemd` によりログイン後にマウント実行、認証情報は `/etc/davfs2/secrets` に保存 |
 | **同期ディレクトリ（Arch）**| Arch 上の `/home/bentham/Nextcloud` に WebDAV をマウントし、Obsidian などで編集可能 |
 
+## WindowsのメインPCにも設定
+
+- windows11のノートPCもArchと同じように設定する
+  - Tailscale を Windows にインストールし接続
+    - 証明書を信頼させる
+      - 証明書をWindowsPCに移す
+        - `scp bentham@192.168.1.110:/etc/ssl/certs/nextcloud-selfsigned.crt .`
+    - Windowsに証明書を信頼させる
+      - Win + R キーを押して、「certmgr.msc」と入力 → Enter
+      - 左側メニューから: 「信頼されたルート証明機関」 > 「証明書」 を選択
+      - 右クリック → 「すべてのタスク」 → 「インポート」
+      - ウィザードに従って、nextcloud-selfsigned.cer を選択
+      - 「証明書をすべて次のストアに配置する」を選び、「信頼されたルート証明機関」 を選択
+      - インポート完了後、**一度再起動 or ネットワーク関係の再接続（ObsidianやWebDAVなど）**を実行
+  - WebDAV を Windows にマウント
+    - 「エクスプローラー」 → 「PC」→「ネットワーク ドライブの割り当て」
+      - `https://<TailscaleのNextcloudサーバーIP>/remote.php/dav/files/bentham/`：フォルダに入力
+      - 「別の資格情報を使用して接続する」にチェック
+      - Nextcloudのユーザー名とアプリパスワードを入力
+        - アプリパスワードは、Nextcloud Web UIの「セキュリティ」から生成
+
 ### 設定継続
 
 - メイン(Windows11)からサーバーへ接続
