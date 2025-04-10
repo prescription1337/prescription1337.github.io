@@ -103,3 +103,7 @@ tags: [Thinkpad X1 carbon, ssd]
   - `yay -S google-chrome`
 - Obsidian
   - `yay -S obsidian`
+- Wi-fiのGUI設定
+  - `sudo systemctl status NetworkManager`
+  - `sudo systemctl start NetworkManager`
+  - `sudo systemctl enable NetworkManager`
