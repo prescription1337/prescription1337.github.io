@@ -345,6 +345,11 @@ tags: [Desktop]
         - 権限を変更：
           - `sudo chmod 644 /etc/davfs2/certs/{tailscale_IP}`
           - `sudo chown root:root /etc/davfs2/certs/{tailscale_IP}`
+  - ACL（アクセス制御リスト）を使って www-data に書き込み権限を追加
+    - `sudo setfacl -R -m u:www-data:rwx /mnt/nextcloud/bentham`
+    - `sudo setfacl -dR -m u:www-data:rwx /mnt/nextcloud/bentham`
+    - Nextcloudはセキュリティと整合性重視だから、Web UIやWebDAV経由以外（＝CLIやSCPとかでの直接操作）でファイルをいじった場合は自動反映されない仕様になっている
+      - cliで直接フォルダを削除したときにすぐ反映するコマンド：`sudo -u www-data php /var/www/html/nextcloud/occ files:scan --path="bentham/files"`
 
 ### Nextcloud連携・全体構成図（外部からファイル同期まで）
 - ここまでの構成を確認
@@ -413,20 +418,25 @@ tags: [Desktop]
     - 証明書を信頼させる
       - 証明書をWindowsPCに移す
         - `scp bentham@192.168.1.110:/etc/ssl/certs/nextcloud-selfsigned.crt .`
-    - Windowsに証明書を信頼させる
-      - Win + R キーを押して、「certmgr.msc」と入力 → Enter
-      - 左側メニューから: 「信頼されたルート証明機関」 > 「証明書」 を選択
-      - 右クリック → 「すべてのタスク」 → 「インポート」
-      - ウィザードに従って、nextcloud-selfsigned.cer を選択
-      - 「証明書をすべて次のストアに配置する」を選び、「信頼されたルート証明機関」 を選択
-      - インポート完了後、**一度再起動 or ネットワーク関係の再接続（ObsidianやWebDAVなど）**を実行
+      - Windowsに証明書を信頼させる
+        - Win + R キーを押して、「certmgr.msc」と入力 → Enter
+        - 左側メニューから: 「信頼されたルート証明機関」 > 「証明書」 を選択
+        - 右クリック → 「すべてのタスク」 → 「インポート」
+        - ウィザードに従って、nextcloud-selfsigned.cer を選択
+        - 「証明書をすべて次のストアに配置する」を選び、「信頼されたルート証明機関」 を選択
+        - インポート完了後、**一度再起動 or ネットワーク関係の再接続（ObsidianやWebDAVなど）**を実行
+    - nextcloud.local を Windows に認識させる（hosts設定）
+      - メモ帳を 管理者として実行
+      - ファイルを開く: `C:\Windows\System32\drivers\etc\hosts`
+      - 一番下に追加：`192.168.1.110   nextcloud.local`
   - WebDAV を Windows にマウント
     - 「エクスプローラー」 → 「PC」→「ネットワーク ドライブの割り当て」
-      - `https://<TailscaleのNextcloudサーバーIP>/remote.php/dav/files/bentham/`：フォルダに入力
+      - `https://nextcloud.local/remote.php/dav/files/bentham/`：フォルダに入力
       - 「別の資格情報を使用して接続する」にチェック
-      - Nextcloudのユーザー名とアプリパスワードを入力
-        - アプリパスワードは、Nextcloud Web UIの「セキュリティ」から生成
-
+      - Nextcloudのユーザー名とパスワードを入力
+      - 上手く行くとnextcloudのフォルダが指定したドライブにマウントされる
+        - ![alt text](../assets/images/Screenshot-2025-04-09-165219.png)
+    - 
 ### 設定継続
 
 - メイン(Windows11)からサーバーへ接続
@@ -440,7 +450,7 @@ tags: [Desktop]
       - `sudo nano /etc/ssh/sshd_config`
       - コメントアウトされていたら修正：`PubkeyAuthentication yes`, `AuthorizedKeysFile     .ssh/authorized_keys`, `PasswordAuthentication no`
     - なぜかうまくいかないので、PW毎回入力する
-  - 
+  -
   - 
 
 
