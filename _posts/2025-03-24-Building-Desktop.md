@@ -436,7 +436,8 @@ tags: [Desktop]
       - Nextcloudのユーザー名とパスワードを入力
       - 上手く行くとnextcloudのフォルダが指定したドライブにマウントされる
         - ![alt text](../assets/images/Screenshot-2025-04-09-165219.png)
-    - 
+      - 結局WebDAVとobsidianとの相性が悪く、公式の同期クライアントを導入した。詳細はObsidianノートを参照。
+
 ### 設定継続
 
 - メイン(Windows11)からサーバーへ接続
@@ -450,8 +451,8 @@ tags: [Desktop]
       - `sudo nano /etc/ssh/sshd_config`
       - コメントアウトされていたら修正：`PubkeyAuthentication yes`, `AuthorizedKeysFile     .ssh/authorized_keys`, `PasswordAuthentication no`
     - なぜかうまくいかないので、PW毎回入力する
-  -
-  - 
+
+## 
 
 
 
