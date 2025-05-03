@@ -209,12 +209,18 @@ order: 6
 - 
 
 - PG回答を参考する：[PG解法集](https://medium.com/@ardian.danny)
-  - 
 - update on your local Kali VM: 
   - Error: `Missing key 827C8569F2518CC677FECA1AED65462EC8D5E4C5`
   - fix: `sudo wget https://archive.kali.org/archive-keyring.gpg -O /usr/share/keyrings/kali-archive-keyring.gpg`
 
-## 2. HTB Lab 攻略
+## 2. VMの準備
+- ソース：[Kali Linux Virtual Machine](https://help.offsec.com/hc/en-us/articles/360049796792-Kali-Linux-Virtual-Machine)
+  - ソフトウェアのダウンロード：[VMware Workstation Pro (For Windows) 17.6.3](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion)
+  - kali vmダウンロード：[Pre-built Virtual Machines](https://www.kali.org/get-kali/#kali-virtual-machines)
+  - セットアップ方法：[How Install Kali Linux on VMware Workstation 17 pro](https://www.youtube.com/watch?v=A1Bm9KmPQ0o)
+  - 
+
+## 3. HTB Lab 攻略
 
 ### Labの進捗管理
 
