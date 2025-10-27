@@ -218,7 +218,12 @@ order: 6
   - ソフトウェアのダウンロード：[VMware Workstation Pro (For Windows) 17.6.3](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion)
   - kali vmダウンロード：[Pre-built Virtual Machines](https://www.kali.org/get-kali/#kali-virtual-machines)
   - セットアップ方法：[How Install Kali Linux on VMware Workstation 17 pro](https://www.youtube.com/watch?v=A1Bm9KmPQ0o)
-  - 
+
+## 3. コースについて
+
+- 主に2つ
+  - Learning modules (Learning Unitという小さな単位に分かれている)
+  - Challenge Labs
 
 ## 3. HTB Lab 攻略
 
