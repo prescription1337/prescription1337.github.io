@@ -17,3 +17,10 @@ tags: [Thinkpad X1 carbon, ssd]
 
 所感：
 - 
+
+## 手順
+
+1. ISOをUSBに焼く(rufus, dd mode)
+    https://blackarch.org/downloads.html
+2. UEFI/BIOS から USB ブート
+3. 
